@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils";
 import Icons from "./Icons";
 import AuthButton from "./AuthButton";
 import UserMenu from "./UserMenu";
+import AuthModal from "@/components/Auth/DialogBox/AuthModal";
 
 type User = boolean;
 
@@ -13,8 +14,7 @@ interface RightContentProps {
 const RightContent: React.FC<RightContentProps> = ({ className, user }) => {
   return (
     <div className={cn("", className)}>
-      {/* TODO */}
-      {/* <AuthModal/> */}
+      <AuthModal />
       <div className="flex justify-center gap-[10px] align-middle">
         {user ? <Icons /> : <AuthButton />}
         <UserMenu user={user} />

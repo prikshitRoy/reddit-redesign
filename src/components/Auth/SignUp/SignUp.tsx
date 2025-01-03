@@ -67,17 +67,15 @@ const SignUp: React.FC = () => {
 
   // onSubmit
   const handleSubmit = async () => {
-    setClickState({ clickedOn: undefined });
-    if (clickState.clickedOn !== "signup") {
-      try {
-        await ErrorCheck();
-        if (!error) {
-          SignUpService({ email: value });
-        }
-      } catch (err) {
-        // Handle any unexpected errors
-        console.error("Unexpected error during submission:", err);
+    try {
+      await ErrorCheck();
+      if (!error) {
+        console.log("Error Check");
+        SignUpService({ email: value });
       }
+    } catch (err) {
+      // Handle any unexpected errors
+      console.error("Unexpected error during submission:", err);
     }
   };
 
@@ -92,6 +90,7 @@ const SignUp: React.FC = () => {
   // onSubmit
   useEffect(() => {
     if (clickState.clickedOn === "signup") {
+      setClickState({ clickedOn: undefined });
       handleSubmit();
     }
   }, [clickState]);

@@ -1,7 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Ellipsis } from "lucide-react";
-
-type User = boolean;
+import { User } from "firebase/auth";
 
 type UserMenuProps = {
   user?: User | null;

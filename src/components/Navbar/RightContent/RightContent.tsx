@@ -3,8 +3,7 @@ import Icons from "./Icons";
 import AuthButton from "./AuthButton";
 import UserMenu from "./UserMenu";
 import AuthModal from "@/components/Auth/DialogBox/AuthModal";
-
-type User = boolean;
+import { User } from "firebase/auth";
 
 interface RightContentProps {
   className?: string;

@@ -4,10 +4,13 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Searchinput from "./Searchinput";
 import RightContent from "./RightContent/RightContent";
-
-const user: boolean = false;
+import { auth } from "@/firebase/clientApp";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 const Navbar: React.FC = () => {
+  // User
+  const [user, loading, error] = useAuthState(auth);
+
   const router = useRouter();
   const Home = () => {
     router.push("/"); // Navigates to the home page

@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import RedditInput from "@/components/ui/customUI/InputField";
 import ResetOrNewUser from "@/components/Auth/Login/ResetOrNewUser";
+import { useRecoilState } from "recoil";
+import { authOnClickState } from "@/atoms/authOnClickAtom";
+import { useLoginService } from "@/services/authService";
 
 type InputStateType = {
   isFocused: boolean;
@@ -20,6 +23,8 @@ const userLogin = [
 ];
 
 const Login: React.FC = () => {
+  const [clickState, setClickState] = useRecoilState(authOnClickState);
+  const { logIn, user, loading, error } = useLoginService();
   // Default inputState
   const defaultState: InputState = userLogin.reduce((acc, field) => {
     acc[field.id] = {
@@ -67,6 +72,22 @@ const Login: React.FC = () => {
     // Reset state to the defaultState on component mount
     setInputState(defaultState);
   }, []);
+
+  // onSubmit
+  const handleSubmit = async () => {
+    logIn({
+      email: inputState.EmailOrUsername.value,
+      password: inputState.password.value,
+    });
+  };
+
+  // onSubmit
+  useEffect(() => {
+    if (clickState.clickedOn === "login") {
+      setClickState({ clickedOn: undefined, disable: true });
+      handleSubmit();
+    }
+  }, [clickState]);
 
   return (
     <>

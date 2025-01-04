@@ -6,8 +6,9 @@ import RedditInput from "@/components/ui/customUI/InputField";
 import { authOnClickState } from "@/atoms/authOnClickAtom";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { emailValidator } from "@/lib/zodValidators/zodAuth";
-import { SignUpService } from "@/services/authService";
+
 import { z } from "zod";
+import { useSignUpService } from "@/services/authService";
 
 const SignUp: React.FC = () => {
   const setAuthModalState = useSetRecoilState(authModalState);
@@ -17,6 +18,7 @@ const SignUp: React.FC = () => {
   const [error, setError] = useState<boolean>(false); // error
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // errorMessage
   const [borderColor, setBorderColor] = useState<string>("border-transparent");
+  const { signUp, userCred, loading, userError } = useSignUpService();
 
   // FocusOn
   const handleFocus = () => {
@@ -65,11 +67,14 @@ const SignUp: React.FC = () => {
   };
 
   // onSubmit
-  // onSubmit
   const handleSubmit = async () => {
     const isValid = await ErrorCheck();
     if (isValid) {
-      SignUpService({ email: value });
+      signUp({ email: value });
+      setAuthModalState((prev) => ({
+        ...prev,
+        view: "createUserPassword",
+      }));
     }
   };
 

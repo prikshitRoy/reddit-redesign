@@ -1,31 +1,52 @@
 "use client";
 
-import { collection, addDoc } from "firebase/firestore";
-import { db } from "../firebase/clientApp";
-
+import { auth, db } from "../firebase/clientApp";
+import {
+  useCreateUserWithEmailAndPassword,
+  useSignInWithEmailAndPassword,
+} from "react-firebase-hooks/auth";
 interface UserCredentials {
   email?: string;
   password?: string;
+  userName?: string;
 }
 
-function LoginService(credentials: UserCredentials) {
-  console.log("Email:", credentials.email);
-  console.log("Password:", credentials.password);
+export function useLoginService() {
+  const [signInWithEmailAndPassword, user, loading, error] =
+    useSignInWithEmailAndPassword(auth);
+
+  const logIn = ({ email, password }: UserCredentials) => {
+    if (email && password) {
+      signInWithEmailAndPassword(email, password);
+    }
+  };
+
+  return {
+    logIn,
+    user,
+    loading,
+    error,
+  };
 }
 
-async function SignUpService(credentials: UserCredentials) {
-  console.log("Sending Email:", credentials.email);
+export function useSignUpService() {
+  const [createUserWithEmailAndPassword, userCred, loading, userError] =
+    useCreateUserWithEmailAndPassword(auth);
 
-  try {
-    const docRef = await addDoc(collection(db, "emailVerification"), {
-      emailId: credentials.email,
-    });
-    console.log("Document written with ID: ", docRef.id);
+  const signUp = ({ email, password, userName }: UserCredentials) => {
+    if (email) {
+      //console.log("newEmail:", email);
+    } else if (userName && password) {
+      createUserWithEmailAndPassword(userName, password);
+    }
+  };
 
-    // TODO: Send Email
-  } catch (e) {
-    console.error("Error adding document: ", e);
-  }
+  return {
+    signUp,
+    userCred,
+    loading,
+    userError,
+  };
 }
 
 function resetPasswordService(credentials: UserCredentials) {
@@ -36,9 +57,4 @@ function verifyEmailService(credentials: UserCredentials) {
   console.log("Email:", credentials.email);
 }
 
-export {
-  LoginService,
-  SignUpService,
-  resetPasswordService,
-  verifyEmailService,
-};
+export { resetPasswordService, verifyEmailService };

@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from "react";
 import RedditInput from "@/components/ui/customUI/InputField";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { authOnClickState } from "@/atoms/authOnClickAtom";
+import { useSignUpService } from "@/services/authService";
+import { authModalState } from "@/atoms/authModalAtom";
 
 type InputStateType = {
   isFocused: boolean;
@@ -14,11 +18,13 @@ type InputState = {
 };
 
 const userLogin = [
-  { label: "Username", type: "text", id: "EmailOrUsername" },
+  { label: "Username", type: "text", id: "Username" },
   { label: "Password", type: "password", id: "password" },
 ];
 
 const CreateUserPassword: React.FC = () => {
+  const [clickState, setClickState] = useRecoilState(authOnClickState);
+  const { signUp, userCred, loading, userError } = useSignUpService();
   // Default inputState
   const defaultState: InputState = userLogin.reduce((acc, field) => {
     acc[field.id] = {
@@ -66,6 +72,22 @@ const CreateUserPassword: React.FC = () => {
     // Reset state to the defaultState on component mount
     setInputState(defaultState);
   }, []);
+
+  // onSubmit
+  const handleSubmit = async () => {
+    signUp({
+      userName: inputState.Username.value,
+      password: inputState.password.value,
+    });
+  };
+
+  // onSubmit
+  useEffect(() => {
+    if (clickState.clickedOn === "createUserPassword") {
+      setClickState({ clickedOn: undefined, disable: true });
+      handleSubmit();
+    }
+  }, [clickState]);
 
   return (
     <>

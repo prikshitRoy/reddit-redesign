@@ -13,11 +13,12 @@ import { ArrowLeft } from "lucide-react";
 import AuthInputs from "./AuthInputs";
 import { useEffect } from "react";
 import AuthSubmitButton from "./AuthSubmitButton";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/firebase/clientApp";
 
 const AuthModal: React.FC = () => {
   const [modalState, setModalState] = useRecoilState(authModalState);
-
-  const user: boolean = false;
+  const [user, loading, error] = useAuthState(auth);
 
   const back = () => {
     setModalState((prev) => ({

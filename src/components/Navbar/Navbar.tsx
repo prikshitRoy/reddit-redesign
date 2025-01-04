@@ -8,8 +8,7 @@ import { auth } from "@/firebase/clientApp";
 import { useAuthState } from "react-firebase-hooks/auth";
 
 const Navbar: React.FC = () => {
-  // User
-  const [user, loading, error] = useAuthState(auth);
+  const [user, loading, error] = useAuthState(auth); // User
 
   const router = useRouter();
   const Home = () => {

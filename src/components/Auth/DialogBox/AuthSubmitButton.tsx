@@ -4,10 +4,13 @@ import { authModalState } from "@/atoms/authModalAtom";
 import { useRecoilState } from "recoil";
 import { Button } from "../../ui/button";
 import { authOnClickState } from "@/atoms/authOnClickAtom";
+import { useEffect } from "react";
 
 function AuthSubmitButton() {
   const [modalState, setModalState] = useRecoilState(authModalState);
   const [clickState, setClickState] = useRecoilState(authOnClickState);
+
+  useEffect(() => {}, [clickState.disable]);
 
   /* click on signUp continue */
   const onClick = () => {
@@ -30,6 +33,7 @@ function AuthSubmitButton() {
       <Button
         className="mt-7 flex w-72 rounded-2xl bg-gray-200 text-xs font-[600] text-gray-400"
         onClick={onClick}
+        disabled={clickState.disable}
       >
         {modalState.view === "login" && "Log In"}
         {modalState.view === "signup" && "Continue"}

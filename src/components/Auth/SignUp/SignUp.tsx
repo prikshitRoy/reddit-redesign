@@ -39,43 +39,37 @@ const SignUp: React.FC = () => {
 
   // Triggers Input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value; // Get the current value from input
+    const newValue = e.target.value.trim(); // Get the current value from input
     setValue(newValue); // Update state
     //console.log("New User Email:", newValue);
   };
 
   // Error Check
-  const ErrorCheck = async (): Promise<void> => {
-    // Validate Email
-    return new Promise((resolve, reject) => {
-      try {
-        emailValidator.parse({ email: value }); // Validate the email
-        setErrorMessage(null); // Clear error if valid
-        setError(false);
-        resolve();
-        //console.log("Valid Email:", value);
-      } catch (err) {
-        if (err instanceof z.ZodError) {
-          setErrorMessage(err.errors[0].message); // Set the validation error message
-          setBorderColor("border-red-500");
-          setError(true);
-          reject(err);
-        }
+  const ErrorCheck = async (): Promise<boolean> => {
+    try {
+      emailValidator.parse({ email: value }); // Validate the email
+      setErrorMessage(null); // Clear error if valid
+      setError(false);
+      return true;
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        setErrorMessage(err.errors[0].message); // Set the validation error message
+        setBorderColor("border-red-500");
+        setError(true);
+      } else {
+        setErrorMessage("An unexpected error occurred");
+        setError(true);
       }
-    });
+      return false;
+    }
   };
 
   // onSubmit
+  // onSubmit
   const handleSubmit = async () => {
-    try {
-      await ErrorCheck();
-      if (!error) {
-        console.log("Error Check");
-        SignUpService({ email: value });
-      }
-    } catch (err) {
-      // Handle any unexpected errors
-      console.error("Unexpected error during submission:", err);
+    const isValid = await ErrorCheck();
+    if (isValid) {
+      SignUpService({ email: value });
     }
   };
 

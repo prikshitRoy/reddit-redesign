@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { authModalState } from "@/atoms/authModalAtom";
-import RedditInput from "@/components/ui/customUI/InputField";
-import { authOnClickState } from "@/atoms/authOnClickAtom";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { emailValidator } from "@/lib/zodValidators/zodAuth";
-
 import { z } from "zod";
+import { useEffect, useState } from "react";
+import { useRecoilState, useSetRecoilState } from "recoil";
+
+import { authModalState } from "@/atoms/authModalAtom";
+import { authOnClickState } from "@/atoms/authOnClickAtom";
+import RedditInput from "@/components/ui/customUI/InputField";
+import { emailValidator } from "@/lib/zodValidators/zodAuth";
 import { useSignUpService } from "@/services/authService";
 
 const SignUp: React.FC = () => {
@@ -42,6 +42,14 @@ const SignUp: React.FC = () => {
   // Triggers Input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value.trim(); // Get the current value from input
+    try {
+      emailValidator.parse({ email: newValue }); // Validate the email
+      setClickState({ disable: false });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        setClickState({ disable: true });
+      }
+    }
     setValue(newValue); // Update state
     //console.log("New User Email:", newValue);
   };
@@ -71,6 +79,7 @@ const SignUp: React.FC = () => {
     const isValid = await ErrorCheck();
     if (isValid) {
       signUp({ email: value });
+      setClickState({ disable: true });
       setAuthModalState((prev) => ({
         ...prev,
         view: "createUserPassword",
@@ -120,6 +129,7 @@ const SignUp: React.FC = () => {
             onChange={handleChange} // Triggers when input changes
             onFocus={handleFocus} // FocusOn
             onBlur={handleBlur} // FocusOff
+            disabled={loading} // disable when user is loading
           />
         </div>
         <div className="mx-3 flex h-[1rem] w-64">

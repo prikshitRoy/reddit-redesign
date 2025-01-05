@@ -8,7 +8,7 @@ export interface AuthOnClickState {
 }
 
 const defaultauthOnClickState: AuthOnClickState = {
-  disable: false,
+  disable: true,
   error: false,
   clickedOn: undefined,
 };

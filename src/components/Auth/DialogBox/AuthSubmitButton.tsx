@@ -1,16 +1,14 @@
 "use client";
 
-import { authModalState } from "@/atoms/authModalAtom";
 import { useRecoilState } from "recoil";
+
 import { Button } from "../../ui/button";
+import { authModalState } from "@/atoms/authModalAtom";
 import { authOnClickState } from "@/atoms/authOnClickAtom";
-import { useEffect } from "react";
 
 function AuthSubmitButton() {
   const [modalState, setModalState] = useRecoilState(authModalState);
   const [clickState, setClickState] = useRecoilState(authOnClickState);
-
-  useEffect(() => {}, [clickState.disable]);
 
   /* click on signUp continue */
   const onClick = () => {
@@ -27,11 +25,9 @@ function AuthSubmitButton() {
 
   return (
     <>
-      {/* TODO */}
-      {/* bg-[#D93900] hover:bg-[#AE2C00] */}
       {/* Subbmit Button */}
       <Button
-        className="mt-7 flex w-72 rounded-2xl bg-gray-200 text-xs font-[600] text-gray-400"
+        className={`${clickState.disable ? "bg-gray-200 text-gray-400" : "bg-[#D93900] text-white hover:bg-[#AE2C00]"} mt-7 flex w-72 rounded-2xl text-xs font-[600]`}
         onClick={onClick}
         disabled={clickState.disable}
       >

@@ -1,6 +1,5 @@
 "use client";
 
-import { z } from "zod";
 import { useEffect, useState } from "react";
 import { useRecoilState, useSetRecoilState } from "recoil";
 
@@ -9,6 +8,7 @@ import { authOnClickState } from "@/atoms/authOnClickAtom";
 import RedditInput from "@/components/ui/customUI/InputField";
 import { emailValidator } from "@/lib/zodValidators/zodAuth";
 import { useSignUpService } from "@/services/authService";
+import { FIREBASE_ERRORS } from "@/firebase/errors";
 
 const SignUp: React.FC = () => {
   const setAuthModalState = useSetRecoilState(authModalState);
@@ -18,12 +18,15 @@ const SignUp: React.FC = () => {
   const [error, setError] = useState<boolean>(false); // error
   const [errorMessage, setErrorMessage] = useState<string | null>(null); // errorMessage
   const [borderColor, setBorderColor] = useState<string>("border-transparent");
-  const { signUp, userCred, loading, userError } = useSignUpService();
+  const { signUp, userCred, loading, userErrorMessage } = useSignUpService();
+  const { emailValidatorMessage, validateEmail } = emailValidator();
 
   // FocusOn
   const handleFocus = () => {
     setIsFocused(true);
     setBorderColor("border-blue-500");
+    setErrorMessage(null); // Clear error if valid
+    setError(false);
   };
 
   // FocusOff
@@ -42,44 +45,32 @@ const SignUp: React.FC = () => {
   // Triggers Input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value.trim(); // Get the current value from input
-    try {
-      emailValidator.parse({ email: newValue }); // Validate the email
-      setClickState({ disable: false });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        setClickState({ disable: true });
-      }
-    }
     setValue(newValue); // Update state
-    //console.log("New User Email:", newValue);
+    validateEmail(newValue)
+      ? setClickState({ disable: false })
+      : setClickState({ disable: true });
   };
 
   // Error Check
-  const ErrorCheck = async (): Promise<boolean> => {
+  const ErrorCheck = () => {
     try {
-      emailValidator.parse({ email: value }); // Validate the email
-      setErrorMessage(null); // Clear error if valid
-      setError(false);
-      return true;
-    } catch (err) {
-      if (err instanceof z.ZodError) {
-        setErrorMessage(err.errors[0].message); // Set the validation error message
-        setBorderColor("border-red-500");
-        setError(true);
-      } else {
-        setErrorMessage("An unexpected error occurred");
-        setError(true);
+      if (validateEmail(value)) {
+        setErrorMessage(null); // Clear error if valid
+        setError(false);
       }
-      return false;
+    } catch (error) {
+      setErrorMessage(emailValidatorMessage); // Set the validation error message
+      setBorderColor("border-red-500");
+      setError(true);
     }
   };
 
   // onSubmit
-  const handleSubmit = async () => {
-    const isValid = await ErrorCheck();
-    if (isValid) {
+  const handleSubmit = () => {
+    if (validateEmail(value)) {
       signUp({ email: value });
       setClickState({ disable: true });
+      //TODO: Check if same email Exist
       setAuthModalState((prev) => ({
         ...prev,
         view: "createUserPassword",
@@ -133,9 +124,14 @@ const SignUp: React.FC = () => {
           />
         </div>
         <div className="mx-3 flex h-[1rem] w-64">
-          {errorMessage && (
-            <div className="text-xs text-red-500">{errorMessage}</div>
-          )}
+          {
+            errorMessage && (
+              <div className="text-xs text-red-500">{errorMessage}</div>
+            ) /* ||
+            FIREBASE_ERRORS[
+              userErrorMessage?.message as keyof typeof FIREBASE_ERRORS
+            ] */
+          }
         </div>
 
         <div className="mb-[108px] mt-[0.25rem] flex space-x-1 text-xs tracking-tight">

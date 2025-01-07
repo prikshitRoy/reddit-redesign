@@ -1,10 +1,12 @@
 "use client";
 
+import { useRecoilState } from "recoil";
 import { auth, db } from "../firebase/clientApp";
 import {
   useCreateUserWithEmailAndPassword,
   useSignInWithEmailAndPassword,
 } from "react-firebase-hooks/auth";
+import { userEmailState } from "@/atoms/authModalAtom";
 interface UserCredentials {
   email?: string;
   password?: string;
@@ -30,14 +32,15 @@ export function useLoginService() {
 }
 
 export function useSignUpService() {
+  const [NewEmail, setNewEmail] = useRecoilState(userEmailState);
   const [createUserWithEmailAndPassword, userCred, loading, userError] =
     useCreateUserWithEmailAndPassword(auth);
 
   const signUp = ({ email, password, userName }: UserCredentials) => {
     if (email) {
-      //console.log("newEmail:", email);
+      setNewEmail({ email: email });
     } else if (userName && password) {
-      createUserWithEmailAndPassword(userName, password);
+      createUserWithEmailAndPassword(NewEmail.email, password);
     }
   };
 
@@ -45,7 +48,7 @@ export function useSignUpService() {
     signUp,
     userCred,
     loading,
-    userError,
+    userErrorMessage: userError,
   };
 }
 

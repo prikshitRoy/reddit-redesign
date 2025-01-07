@@ -5,7 +5,7 @@ import RedditInput from "@/components/ui/customUI/InputField";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { authOnClickState } from "@/atoms/authOnClickAtom";
 import { useSignUpService } from "@/services/authService";
-import { authModalState } from "@/atoms/authModalAtom";
+import { emailValidator } from "@/lib/zodValidators/zodAuth";
 
 type InputStateType = {
   isFocused: boolean;
@@ -23,8 +23,9 @@ const userLogin = [
 ];
 
 const CreateUserPassword: React.FC = () => {
+  const { emailValidatorMessage, validateEmail } = emailValidator();
   const [clickState, setClickState] = useRecoilState(authOnClickState);
-  const { signUp, userCred, loading, userError } = useSignUpService();
+  const { signUp, userCred, loading, userErrorMessage } = useSignUpService();
   // Default inputState
   const defaultState: InputState = userLogin.reduce((acc, field) => {
     acc[field.id] = {
@@ -66,6 +67,10 @@ const CreateUserPassword: React.FC = () => {
     }));
 
     console.log(id, ":", value);
+    validateEmail(inputState.Username.value);
+    /*       ? setClickState({ disable: false })
+      : setClickState({ disable: true });  */
+    setClickState({ disable: false });
   };
 
   useEffect(() => {

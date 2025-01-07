@@ -19,3 +19,16 @@ export const authModalState = atom<AuthModalState>({
   key: "authModalState",
   default: defaultModalState,
 });
+
+/* Because of rerender of SignUp page UseState value is resets so I'm using Recoil */
+export interface UserEmail {
+  email: string;
+}
+
+const defaultUserEmail: UserEmail = {
+  email: "",
+};
+export const userEmailState = atom<UserEmail>({
+  key: "userEmailState",
+  default: defaultUserEmail,
+});

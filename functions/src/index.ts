@@ -13,5 +13,22 @@ export const createUserDocumnet = functions.auth
       displayName: user.displayName,
       providerData: user.providerData,
     };
-    db.collection("users").doc(user.uid).set(newUser);
+
+    //db.collection("users").doc(user.uid).set(newUser);
+
+    // Store user document with detailed user information
+    await db.collection("users").doc(user.uid).set(newUser);
+
+    // Store only email in a separate collection for easy retrieval of all emails
+    if (user.email) {
+      await db.collection("emailIDs").doc(user.uid).set({ email: user.email });
+    }
+
+    // Store only displayName in a separate collection for easy retrieval of all displayName
+    if (user.displayName) {
+      await db
+        .collection("displayName")
+        .doc(user.uid)
+        .set({ Name: user.displayName });
+    }
   });

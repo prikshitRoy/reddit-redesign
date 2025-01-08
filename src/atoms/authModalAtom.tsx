@@ -1,4 +1,4 @@
-import { atom } from "recoil";
+import { atom, AtomEffect } from "recoil";
 
 export interface AuthModalState {
   open: boolean;
@@ -32,3 +32,27 @@ export const userEmailState = atom<UserEmail>({
   key: "userEmailState",
   default: defaultUserEmail,
 });
+
+/* DisplayName */
+export interface displayName {
+  name: string;
+}
+
+const defaultdisplayName: displayName = {
+  name: "",
+};
+export const displayNameState = atom<displayName>({
+  key: "displayNameState",
+  default: defaultdisplayName,
+});
+
+// Atom effect for local storage persistence
+// const localStorageEffect =
+//   (key: string): AtomEffect<UserEmail> =>
+//   ({ onSet }) => {};
+
+// export const userEmailState = atom<UserEmail>({
+//   key: "userEmailState",
+//   default: defaultUserEmail,
+//   effects: [localStorageEffect("userEmailState")],
+// });

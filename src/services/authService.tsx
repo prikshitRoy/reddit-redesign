@@ -6,7 +6,7 @@ import {
   useCreateUserWithEmailAndPassword,
   useSignInWithEmailAndPassword,
 } from "react-firebase-hooks/auth";
-import { userEmailState } from "@/atoms/authModalAtom";
+import { displayNameState, userEmailState } from "@/atoms/authModalAtom";
 interface UserCredentials {
   email?: string;
   password?: string;
@@ -31,16 +31,32 @@ export function useLoginService() {
   };
 }
 
+function EmailExist(data: string): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (data) {
+      return true;
+    } else return false;
+  });
+}
+
 export function useSignUpService() {
   const [NewEmail, setNewEmail] = useRecoilState(userEmailState);
+  const [displayName, setdisplayName] = useRecoilState(displayNameState);
   const [createUserWithEmailAndPassword, userCred, loading, userError] =
     useCreateUserWithEmailAndPassword(auth);
 
-  const signUp = ({ email, password, userName }: UserCredentials) => {
+  const signUp = async ({ email, password, userName }: UserCredentials) => {
     if (email) {
       setNewEmail({ email: email });
+
+      // TODO: Check if email already exists
+      // const emailExist = await EmailExist(email);
     } else if (userName && password) {
+      // TODO: Check if email User-Name exists
+      //setdisplayName({ name: userName });
       createUserWithEmailAndPassword(NewEmail.email, password);
+
+      //setNewEmail({ email: "" });
     }
   };
 

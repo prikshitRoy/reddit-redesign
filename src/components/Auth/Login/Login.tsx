@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import RedditInput from "@/components/ui/customUI/InputField";
-import ResetOrNewUser from "@/components/Auth/Login/ResetOrNewUser";
 import { useRecoilState } from "recoil";
+import { useEffect, useState } from "react";
 import { authOnClickState } from "@/atoms/authOnClickAtom";
+import RedditInput from "@/components/ui/customUI/InputField";
 import { useLoginService } from "@/firebaseServices/authService";
+import ResetOrNewUser from "@/components/Auth/Login/ResetOrNewUser";
 
 type InputStateType = {
   isFocused: boolean;
@@ -25,6 +25,7 @@ const userLogin = [
 const Login: React.FC = () => {
   const [clickState, setClickState] = useRecoilState(authOnClickState);
   const { logIn, user, loading, error } = useLoginService();
+
   // Default inputState
   const defaultState: InputState = userLogin.reduce((acc, field) => {
     acc[field.id] = {
@@ -68,10 +69,16 @@ const Login: React.FC = () => {
     console.log(id, ":", value);
   };
 
+  // Reset state to the defaultState on component mount
   useEffect(() => {
-    // Reset state to the defaultState on component mount
     setInputState(defaultState);
   }, []);
+
+  useEffect(() => {
+    if (inputState.EmailOrUsername.value && inputState.password.value) {
+      setClickState({ disable: false });
+    }
+  }, [inputState]);
 
   // onSubmit
   const handleSubmit = async () => {

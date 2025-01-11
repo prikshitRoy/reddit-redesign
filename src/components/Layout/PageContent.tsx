@@ -4,14 +4,14 @@ type PageContentProps = { children: React.ReactNode };
 
 const PageContent: React.FC<PageContentProps> = ({ children }) => {
   return (
-    <main className="flex justify-center py-16">
-      <div className="flex w-[95%] max-w-[860px] justify-center">
+    <main className="flex justify-center">
+      <div className="flex w-full justify-center">
         {/* Left Hand Side */}
-        <section className="flex flex-col">
+        <section className="flex w-[16.5rem] flex-col border-r">
           {children && children[0 as keyof typeof children]}
         </section>
         {/* Right Hand Side */}
-        <section className="flex flex-col">
+        <section className="flex w-full flex-col">
           {children && children[1 as keyof typeof children]}
         </section>
       </div>

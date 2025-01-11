@@ -5,7 +5,7 @@ import RedditInput from "@/components/ui/customUI/InputField";
 import ResetOrNewUser from "@/components/Auth/Login/ResetOrNewUser";
 import { useRecoilState } from "recoil";
 import { authOnClickState } from "@/atoms/authOnClickAtom";
-import { useLoginService } from "@/services/authService";
+import { useLoginService } from "@/firebaseServices/authService";
 
 type InputStateType = {
   isFocused: boolean;

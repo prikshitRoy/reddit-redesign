@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import RedditInput from "@/components/ui/customUI/InputField";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import { authOnClickState } from "@/atoms/authOnClickAtom";
-import { useSignUpService } from "@/services/authService";
+import { useSignUpService } from "@/firebaseServices/authService";
 import { emailValidator } from "@/lib/zodValidators/zodAuth";
 
 type InputStateType = {

@@ -15,7 +15,7 @@ import React, { useState } from "react";
 
 import { auth } from "@/firebase/clientApp";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { Community } from "@/services/CommunityFirebase/CreateCommunity";
+import { Community } from "@/firebaseServices/CommunityFirebase/CreateCommunity";
 
 const Communities: React.FC = () => {
   const { CreateCommunity, communityStatus, errorInCreatingCommunity } =

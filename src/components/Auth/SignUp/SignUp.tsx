@@ -7,7 +7,7 @@ import { authModalState } from "@/atoms/authModalAtom";
 import { authOnClickState } from "@/atoms/authOnClickAtom";
 import RedditInput from "@/components/ui/customUI/InputField";
 import { emailValidator } from "@/lib/zodValidators/zodAuth";
-import { useSignUpService } from "@/services/authService";
+import { useSignUpService } from "@/firebaseServices/authService";
 import { FIREBASE_ERRORS } from "@/firebase/errors";
 
 const SignUp: React.FC = () => {

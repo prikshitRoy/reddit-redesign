@@ -1,6 +1,6 @@
 "use client";
 
-import Communities from "@/components/Community/CommunityModal";
+import Communities from "@/components/Community/CommunityDialogBox/CommunityModal";
 import { auth } from "@/firebase/clientApp";
 import { useAuthState } from "react-firebase-hooks/auth";
 

@@ -1,11 +1,16 @@
 "use client";
 
-import Communities from "@/components/Community/CommunityDialogBox/CommunityModal";
+import { createCommunityViewState } from "@/atoms/communitiesAtom";
+import Communities from "@/components/Community/DialogBox/CommunityModal";
 import { auth } from "@/firebase/clientApp";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useSetRecoilState } from "recoil";
 
 const NavigationMenu: React.FC = () => {
   const [user] = useAuthState(auth);
+  const setcreateCommunityViewState = useSetRecoilState(
+    createCommunityViewState,
+  );
 
   return (
     <>
@@ -17,6 +22,17 @@ const NavigationMenu: React.FC = () => {
           <>
             {/* TODO: Make it Dropdown */}
             <div className="text-gray-400">COMMUNITIES</div>
+            <button
+              className="w-full hover:bg-gray-100"
+              onClick={() =>
+                setcreateCommunityViewState({
+                  open: true,
+                  view: "CommunityNameDiscription",
+                })
+              }
+            >
+              Create a Community
+            </button>
             <Communities />
           </>
         )}

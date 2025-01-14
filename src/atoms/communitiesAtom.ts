@@ -31,3 +31,33 @@ export const CommunityState = atom<CommunityState>({
   key: "communitiesState",
   default: defaultCommunityState,
 });
+
+// Create Community View Stare
+// Which Dilog-Box should be open is manage by "CreateCommunityViewState"
+export interface CreateCommunityViewState {
+  open: boolean;
+  disable?: boolean;
+  view:
+    | "CommunityNameDiscription"
+    | "StyleYourCommunity"
+    | "CommunityTopics"
+    | "CommunityPrivacyType";
+}
+
+const defaultCommunityViewState: CreateCommunityViewState = {
+  open: false,
+  disable: true,
+  view: "CommunityNameDiscription",
+};
+
+export const createCommunityViewState = atom<CreateCommunityViewState>({
+  key: "createCommunityViewState",
+  default: defaultCommunityViewState,
+});
+
+export const viewValues: CreateCommunityViewState["view"][] = [
+  "CommunityNameDiscription",
+  "StyleYourCommunity",
+  "CommunityTopics",
+  "CommunityPrivacyType",
+];

@@ -14,7 +14,7 @@ const CommunityNameDescription: React.FC = () => {
   const [communityName, setCommunityName] = useState<string>("communityname");
   const [charsRemaining, setCharsRemaining] = useState<number>(21);
 
-  // Description
+  // Community Description
   const [totalDescriptionChars, setTotalDescriptionChars] = useState<number>(0);
   const [description, setDescription] = useState<string>(
     "Your community description",
@@ -23,18 +23,18 @@ const CommunityNameDescription: React.FC = () => {
   // Loading
   const [loading, setloading] = useState<boolean>(false);
 
-  // Community Name Error
+  //Error: Community Name
   const [errorCommunityName, setErrorCommunityName] = useState<boolean>(false);
   const [errorMessageCommunityName, setErrorMesageCommunityName] =
     useState<string>("");
 
-  // Community Discription Error
+  //Error: Community Discription
   const [errorCommunityDiscription, setErrorCommunityDiscription] =
     useState<boolean>(false);
   const [errorMessageCommunityDiscription, setErrorMesageCommunityDiscription] =
     useState<string>("");
 
-  // Community Name Input Box Change Event
+  // Handle Change: Community-Name Input Box Change Event
   const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value.length > 21) return;
     if (event.target.value === "communityname") {
@@ -46,7 +46,7 @@ const CommunityNameDescription: React.FC = () => {
     setCharsRemaining(21 - event.target.value.length);
   };
 
-  // Community Description Text Area Change Event
+  // Handle Change: Community-Description Text Area Change Event
   const handleChangeDescription = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
@@ -54,7 +54,8 @@ const CommunityNameDescription: React.FC = () => {
       setErrorCommunityDiscription(true);
       setErrorMesageCommunityDiscription("Description is too long.");
     }
-    if (event.target.value.length < 500) {
+
+    if (event.target.value.length <= 500) {
       setErrorCommunityDiscription(false);
     }
 
@@ -81,7 +82,7 @@ const CommunityNameDescription: React.FC = () => {
   //FocusOff: Community Description
   const handleBlurDescription = () => {};
 
-  // Community Name Description Check
+  //VALIDITY CHECK: Community Name
   // TODO: Also Add it to backend
   const CommunityNameCheck = () => {
     // Validate Community name ( RULES: NO Special Char,minnium 3 char reqried )
@@ -92,14 +93,12 @@ const CommunityNameDescription: React.FC = () => {
         setErrorMesageCommunityName(
           "Only letters, numbers and underscore are allowed",
         );
-        return;
       }
       if (communityName.length < 3) {
         setErrorCommunityName(true);
         setErrorMesageCommunityName(
           "Please lengthen this text to 3 characters or more",
         );
-        return;
       }
     }
   };
@@ -134,7 +133,6 @@ const CommunityNameDescription: React.FC = () => {
                 onFocus={handleFocus} // FocusOn
                 onBlur={handleBlur} // FocusOff
               />
-
               <div
                 className={`flex items-center justify-between px-2 text-xs ${errorCommunityName ? "text-red-700" : ""}`}
               >

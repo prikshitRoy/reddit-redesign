@@ -59,7 +59,10 @@ const Communities: React.FC = () => {
   return (
     <>
       <Dialog open={createCommunityView.open} onOpenChange={handleClose}>
-        <DialogContent className="w-full pb-1">
+        <DialogContent
+          className="w-full pb-1"
+          onOpenAutoFocus={(e) => e.preventDefault()}
+        >
           {createCommunityView.view === "CommunityNameDiscription" && (
             <CommunityNameDescription />
           )}

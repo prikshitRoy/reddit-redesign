@@ -5,14 +5,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/customUI/Communitydialog";
-import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import React, { useEffect, useState } from "react";
+import RedditInput from "@/components/ui/customUI/RedditInput";
 
 const CommunityNameDescription: React.FC = () => {
   // Community Name
-  const [communityName, setCommunityName] = useState<string>("communityname");
+  const [communityName, setCommunityName] = useState<string>("");
   const [charsRemaining, setCharsRemaining] = useState<number>(21);
+
+  // Focus
+  const [isFocusedCommunityName, setIsFocusedCommunityName] =
+    useState<boolean>(false);
+  const [isBlurCommunityName, setBlurCommunityName] = useState<boolean>(false);
 
   // Community Description
   const [totalDescriptionChars, setTotalDescriptionChars] = useState<number>(0);
@@ -65,17 +70,19 @@ const CommunityNameDescription: React.FC = () => {
 
   // FocusOn: Community Name
   const handleFocus = () => {
+    setIsFocusedCommunityName(true);
     setErrorCommunityName(false);
-    setErrorMesageCommunityName(""); // Clear error if valid
+    setBlurCommunityName(false);
+    setErrorMesageCommunityName("");
   };
 
   // FocusOn: Description
-  const handleFocusDescription = () => {
-    /*  setErrorCommunityDiscription(false); */
-  };
+  const handleFocusDescription = () => {};
 
   // FocusOff: Community Name
   const handleBlur = () => {
+    setBlurCommunityName(true);
+    setIsFocusedCommunityName(false);
     CommunityNameCheck();
   };
 
@@ -86,7 +93,7 @@ const CommunityNameDescription: React.FC = () => {
   // TODO: Also Add it to backend
   const CommunityNameCheck = () => {
     // Validate Community name ( RULES: NO Special Char,minnium 3 char reqried )
-    if (communityName != "communityname" || "") {
+    if (communityName != "") {
       const format = /[ `!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?~]/;
       if (format.test(communityName)) {
         setErrorCommunityName(true);
@@ -101,11 +108,15 @@ const CommunityNameDescription: React.FC = () => {
         );
       }
     }
+    if (communityName === "communityname") {
+      setErrorCommunityName(true);
+      setErrorMesageCommunityName("Community Name already taken");
+    }
   };
 
   // Resets evey time component mounts
   useEffect(() => {
-    setCommunityName("communityname");
+    setCommunityName("");
     setCharsRemaining(21);
     setDescription("Your community description");
     setTotalDescriptionChars(0);
@@ -126,9 +137,14 @@ const CommunityNameDescription: React.FC = () => {
         <div className="grid w-[20rem] gap-4 py-4">
           <div className="grid w-[20rem] grid-cols-4 items-center gap-4">
             <div className="flex w-[20rem] flex-col">
-              <Input
+              <RedditInput
+                className="w-[20rem]"
                 id="CommunityName"
-                placeholder="Community Name *"
+                PlaceHolder="Community name"
+                setErrorByUser={errorCommunityName}
+                setInputValueByUser={communityName}
+                setOnFocusByUser={isFocusedCommunityName}
+                setonBlurByUser={isBlurCommunityName}
                 onChange={handleChangeName}
                 onFocus={handleFocus} // FocusOn
                 onBlur={handleBlur} // FocusOff
@@ -148,7 +164,9 @@ const CommunityNameDescription: React.FC = () => {
                 onChange={handleChangeDescription}
                 onFocus={handleFocusDescription} // FocusOn
                 onBlur={handleBlurDescription} // FocusOff
+                autoFocus={false}
               />
+
               <div
                 className={`flex items-center justify-between px-2 text-xs ${errorCommunityDiscription ? "text-red-700" : ""}`}
               >
@@ -164,7 +182,9 @@ const CommunityNameDescription: React.FC = () => {
 
         <div className="mx-2 flex w-full justify-center">
           <div className="flex max-h-fit w-[13rem] flex-col rounded-xl px-2 py-2 font-bold shadow-lg">
-            <div>r/{communityName}</div>
+            <div>
+              r/{communityName === "" ? "communityname" : communityName}
+            </div>
             <div className="flex flex-col text-[0.6rem] font-thin text-gray-500">
               <div>1 member ·1 online</div>
               <div className="max-h-[12rem] overflow-y-auto break-words py-1 text-xs text-black">

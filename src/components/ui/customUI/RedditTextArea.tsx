@@ -4,35 +4,34 @@ import { cn } from "@/lib/utils";
 import { useMergeRefs } from "use-callback-ref";
 import React, { useState, useEffect, useRef } from "react";
 
-interface InputProps {
-  PlaceHolder?: string;
-  setErrorByUser: boolean;
-  setonBlurByUser: boolean;
-  setOnFocusByUser: boolean;
-  setInputValueByUser: string;
-  setBorderColorByUser?: string;
+interface RedditTextAreaProps {
+  TextAreaPlaceHolder?: string;
+  TextAreasetErrorByUser: boolean;
+  TextAreasetonBlurByUser: boolean;
+  TextAreasetOnFocusByUser: boolean;
+  TextAreasetInputValueByUser: string;
+  TextAreasetBorderColorByUser?: string;
 }
 
-const RedditInput = React.forwardRef<
-  HTMLInputElement,
-  React.ComponentProps<"input"> & InputProps
+const RedditTextArea = React.forwardRef<
+  HTMLTextAreaElement,
+  React.ComponentProps<"textarea"> & RedditTextAreaProps
 >(
   (
     {
-      setBorderColorByUser,
-      setInputValueByUser,
-      setOnFocusByUser,
-      setonBlurByUser,
-      setErrorByUser,
-      PlaceHolder,
+      TextAreasetBorderColorByUser,
+      TextAreasetInputValueByUser,
+      TextAreasetOnFocusByUser,
+      TextAreasetonBlurByUser,
+      TextAreasetErrorByUser,
+      TextAreaPlaceHolder,
       className,
-      type,
       ...props
     },
     ref,
   ) => {
     // Focus cursor on Inputfield
-    const inputRef = useRef<HTMLInputElement>(null);
+    const inputRef = useRef<HTMLTextAreaElement>(null);
 
     // Input Value
     const [inputValue, setInputValue] = useState<string>("");
@@ -48,21 +47,22 @@ const RedditInput = React.forwardRef<
     const handleFocus = () => {
       inputRef.current?.focus();
       setIsFocused(true);
+
       setBorderColor("border-blue-500");
     };
 
     // OffFocus
     const handleBlur = () => {
-      if (inputValue && setErrorByUser) {
+      if (inputValue && TextAreasetErrorByUser) {
         setBorderColor("border-red-500");
         setIsFocused(true);
       }
-      if (inputValue && !setErrorByUser) {
+      if (inputValue && !TextAreasetErrorByUser) {
         setBorderColor("border-transparent");
         setIsFocused(true);
       }
 
-      if (inputValue === "" && !setErrorByUser) {
+      if (inputValue === "" && !TextAreasetErrorByUser) {
         setBorderColor("border-transparent");
         setIsFocused(false);
       }
@@ -77,25 +77,25 @@ const RedditInput = React.forwardRef<
 
     useEffect(() => {
       // InputValue
-      if (setInputValueByUser != "") {
-        setInputValue(setInputValueByUser!);
+      if (TextAreasetInputValueByUser != "") {
+        setInputValue(TextAreasetInputValueByUser!);
       }
-      if (setInputValueByUser === "") {
+      if (TextAreasetInputValueByUser === "") {
         setInputValue("");
       }
 
       // OnFocused
-      if (setOnFocusByUser) {
+      if (TextAreasetOnFocusByUser) {
         handleFocus();
       }
-      if (setonBlurByUser) {
+      if (TextAreasetonBlurByUser) {
         handleBlur();
       }
     }, [
-      setErrorByUser,
-      setInputValueByUser,
-      setOnFocusByUser,
-      setonBlurByUser,
+      TextAreasetErrorByUser,
+      TextAreasetInputValueByUser,
+      TextAreasetOnFocusByUser,
+      TextAreasetonBlurByUser,
     ]);
 
     // Reset
@@ -108,44 +108,41 @@ const RedditInput = React.forwardRef<
     return (
       <>
         <div
-          className={`w-fll group relative h-[2.9rem] rounded-2xl border-2 bg-gray-200 hover:bg-gray-300 ${borderColor}`}
+          className={`group relative min-h-full w-full flex-grow rounded-2xl border-2 bg-gray-200 hover:bg-gray-300 ${borderColor}`}
           onClick={handleFocus}
         >
           <span
             className={`pointer-events-none absolute left-3 border-transparent transition-all duration-300 ${
               isFocused || inputValue
                 ? "top-2 text-[12px]"
-                : "top-1/2 -translate-y-1/2 text-xs"
+                : "top-5 -translate-y-1/2 text-xs"
             }`}
           >
             <span className="text-gray-600">
-              {PlaceHolder ? `${PlaceHolder}` : "Enter Place Holder"}
+              {TextAreaPlaceHolder
+                ? `${TextAreaPlaceHolder}`
+                : "Enter Place Holder"}
             </span>
             <span className="ml-1 text-red-500">*</span>
           </span>
-          <input
+          <textarea
             ref={useMergeRefs([ref, inputRef])}
             {...props}
-            type={type}
             className={cn(
-              `absolute left-3 max-w-[calc(100%-1.5rem)] overflow-hidden bg-transparent text-[16px] leading-tight outline-none ${isFocused ? "bottom-0 mb-[9px] h-[24px]" : "top-1/2 h-[1rem] -translate-y-1/2"}`,
+              `absolute h-full max-h-[calc(100%-2rem)] w-full max-w-[calc(100%-1rem)] resize-none border border-transparent bg-transparent px-3 py-2 text-base outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm ${
+                isFocused ? "bottom-2" : "top-1/2 -translate-y-1/2"
+              } `,
               className,
             )}
-            //value={inputValue} // Provides Input Value
+            // Provides Input Value
             //onFocus={handleFocus} // FocusOn
             //onBlur={handleBlur} // onBlur
           />
-
-          {setErrorByUser && (
-            <div className="absolute right-0 flex h-full w-10 items-center justify-center rounded-br-[18px] rounded-tr-[18px] bg-gray-200 px-3 text-red-800 group-hover:bg-gray-300">
-              O
-            </div>
-          )}
         </div>
       </>
     );
   },
 );
-RedditInput.displayName = "Input";
+RedditTextArea.displayName = "textarea";
 
-export default RedditInput;
+export default RedditTextArea;

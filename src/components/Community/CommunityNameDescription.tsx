@@ -5,124 +5,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/customUI/Communitydialog";
-import { Textarea } from "@/components/ui/textarea";
-import React, { useEffect, useState } from "react";
-import RedditInput from "@/components/ui/customUI/RedditInput";
+import React, { useState } from "react";
 
-const CommunityNameDescription: React.FC = () => {
-  // Community Name
-  const [communityName, setCommunityName] = useState<string>("");
-  const [charsRemaining, setCharsRemaining] = useState<number>(21);
+import CommunityName from "./CommunityName";
+import CommunityDescription from "./CommunityDescription";
 
-  // Focus
-  const [isFocusedCommunityName, setIsFocusedCommunityName] =
-    useState<boolean>(false);
-  const [isBlurCommunityName, setBlurCommunityName] = useState<boolean>(false);
-
-  // Community Description
-  const [totalDescriptionChars, setTotalDescriptionChars] = useState<number>(0);
-  const [description, setDescription] = useState<string>(
-    "Your community description",
-  );
-
-  // Loading
-  const [loading, setloading] = useState<boolean>(false);
-
-  //Error: Community Name
-  const [errorCommunityName, setErrorCommunityName] = useState<boolean>(false);
-  const [errorMessageCommunityName, setErrorMesageCommunityName] =
-    useState<string>("");
-
-  //Error: Community Discription
-  const [errorCommunityDiscription, setErrorCommunityDiscription] =
-    useState<boolean>(false);
-  const [errorMessageCommunityDiscription, setErrorMesageCommunityDiscription] =
-    useState<string>("");
-
-  // Handle Change: Community-Name Input Box Change Event
-  const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value.length > 21) return;
-    if (event.target.value === "communityname") {
-      setErrorCommunityName(true);
-      setErrorMesageCommunityName(`"r/communityname" is already taken`);
-    }
-
-    setCommunityName(event.target.value);
-    setCharsRemaining(21 - event.target.value.length);
+const CommunityNameDescription: React.FC = ({}) => {
+  const [communityName, setCommunityName] = useState("");
+  const handleDataFromCommunityName = (data: string) => {
+    setCommunityName(data);
   };
-
-  // Handle Change: Community-Description Text Area Change Event
-  const handleChangeDescription = (
-    event: React.ChangeEvent<HTMLTextAreaElement>,
-  ) => {
-    if (event.target.value.length > 500) {
-      setErrorCommunityDiscription(true);
-      setErrorMesageCommunityDiscription("Description is too long.");
-    }
-
-    if (event.target.value.length <= 500) {
-      setErrorCommunityDiscription(false);
-    }
-
-    setDescription(event.target.value);
-    setTotalDescriptionChars(event.target.value.length);
-  };
-
-  // FocusOn: Community Name
-  const handleFocus = () => {
-    setIsFocusedCommunityName(true);
-    setErrorCommunityName(false);
-    setBlurCommunityName(false);
-    setErrorMesageCommunityName("");
-  };
-
-  // FocusOn: Description
-  const handleFocusDescription = () => {};
-
-  // FocusOff: Community Name
-  const handleBlur = () => {
-    setBlurCommunityName(true);
-    setIsFocusedCommunityName(false);
-    CommunityNameCheck();
-  };
-
-  //FocusOff: Community Description
-  const handleBlurDescription = () => {};
-
-  //VALIDITY CHECK: Community Name
-  // TODO: Also Add it to backend
-  const CommunityNameCheck = () => {
-    // Validate Community name ( RULES: NO Special Char,minnium 3 char reqried )
-    if (communityName != "") {
-      const format = /[ `!@#$%^&*()+\-=\[\]{};':"\\|,.<>\/?~]/;
-      if (format.test(communityName)) {
-        setErrorCommunityName(true);
-        setErrorMesageCommunityName(
-          "Only letters, numbers and underscore are allowed",
-        );
-      }
-      if (communityName.length < 3) {
-        setErrorCommunityName(true);
-        setErrorMesageCommunityName(
-          "Please lengthen this text to 3 characters or more",
-        );
-      }
-    }
-    if (communityName === "communityname") {
-      setErrorCommunityName(true);
-      setErrorMesageCommunityName("Community Name already taken");
-    }
-  };
-
-  // Resets evey time component mounts
-  useEffect(() => {
-    setCommunityName("");
-    setCharsRemaining(21);
-    setDescription("Your community description");
-    setTotalDescriptionChars(0);
-    setErrorCommunityName(false);
-    setErrorMesageCommunityName("");
-  }, []);
+  const [communityDescriptions, setCommunityDescription] = useState("");
 
   return (
     <>
@@ -134,61 +27,28 @@ const CommunityNameDescription: React.FC = () => {
         </DialogDescription>
       </DialogHeader>
       <div className="flex">
-        <div className="grid w-[20rem] gap-4 py-4">
-          <div className="grid w-[20rem] grid-cols-4 items-center gap-4">
-            <div className="flex w-[20rem] flex-col">
-              <RedditInput
-                className="w-[20rem]"
-                id="CommunityName"
-                PlaceHolder="Community name"
-                setErrorByUser={errorCommunityName}
-                setInputValueByUser={communityName}
-                setOnFocusByUser={isFocusedCommunityName}
-                setonBlurByUser={isBlurCommunityName}
-                onChange={handleChangeName}
-                onFocus={handleFocus} // FocusOn
-                onBlur={handleBlur} // FocusOff
-              />
-              <div
-                className={`flex items-center justify-between px-2 text-xs ${errorCommunityName ? "text-red-700" : ""}`}
-              >
-                <div>
-                  {errorMessageCommunityName && errorMessageCommunityName}
-                </div>
-                <div>{charsRemaining}</div>
-              </div>
-              <Textarea
-                id="CommunityDescription"
-                placeholder="Description *"
-                className="mt-5 h-40 resize-none bg-gray-100"
-                onChange={handleChangeDescription}
-                onFocus={handleFocusDescription} // FocusOn
-                onBlur={handleBlurDescription} // FocusOff
-                autoFocus={false}
-              />
+        <div className="grid w-[19rem] gap-4 py-4">
+          <div className="grid w-[19rem] grid-cols-4 items-center gap-4">
+            <div className="flex w-[19rem] flex-col">
+              <CommunityName onDataChange={handleDataFromCommunityName} />
 
-              <div
-                className={`flex items-center justify-between px-2 text-xs ${errorCommunityDiscription ? "text-red-700" : ""}`}
-              >
-                <div>
-                  {errorMessageCommunityDiscription &&
-                    errorMessageCommunityDiscription}
-                </div>
-                <div>{totalDescriptionChars}</div>
-              </div>
+              <CommunityDescription />
             </div>
           </div>
         </div>
 
         <div className="mx-2 flex w-full justify-center">
-          <div className="flex max-h-fit w-[13rem] flex-col rounded-xl px-2 py-2 font-bold shadow-lg">
-            <div>
-              r/{communityName === "" ? "communityname" : communityName}
+          <div className="flex max-h-fit w-[14rem] flex-col rounded-xl px-2 py-2 font-bold shadow-lg">
+            <div className="overflow-hidden">
+              r/
+              {communityName === "" ? "communityname" : communityName}
             </div>
             <div className="flex flex-col text-[0.6rem] font-thin text-gray-500">
               <div>1 member ·1 online</div>
               <div className="max-h-[12rem] overflow-y-auto break-words py-1 text-xs text-black">
-                {description}
+                {!communityDescriptions
+                  ? "Your community description"
+                  : communityDescriptions}
               </div>
             </div>
           </div>

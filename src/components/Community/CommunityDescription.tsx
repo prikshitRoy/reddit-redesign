@@ -3,7 +3,13 @@
 import React, { useEffect, useState } from "react";
 import RedditTextArea from "@/components/ui/customUI/RedditTextArea";
 
-const CommunityDescription: React.FC = () => {
+interface CommunityNameProps {
+  CommunityDescriptionChange: (data: string) => void;
+}
+
+const CommunityDescription: React.FC<CommunityNameProps> = ({
+  CommunityDescriptionChange,
+}) => {
   // Community Description: description and Char
   const [description, setDescription] = useState<string>("");
   const [totalDescriptionChars, setTotalDescriptionChars] = useState<number>(0);
@@ -30,6 +36,7 @@ const CommunityDescription: React.FC = () => {
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     setDescription(event.target.value);
+    CommunityDescriptionChange(event.target.value);
     setTotalDescriptionChars(event.target.value.length);
 
     if (event.target.value.length > 500) {
@@ -78,6 +85,7 @@ const CommunityDescription: React.FC = () => {
           onChange={handleChangeDescription}
           onFocus={handleFocusDescription}
           onBlur={handleBlurDescription}
+          value={description}
         />
 
         <div

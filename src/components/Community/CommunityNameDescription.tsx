@@ -6,16 +6,21 @@ import {
   DialogTitle,
 } from "@/components/ui/customUI/Communitydialog";
 import React, { useState } from "react";
-
 import CommunityName from "./CommunityName";
 import CommunityDescription from "./CommunityDescription";
 
-const CommunityNameDescription: React.FC = ({}) => {
+const CommunityNameDescription: React.FC = () => {
+  // Community Name
   const [communityName, setCommunityName] = useState("");
   const handleDataFromCommunityName = (data: string) => {
     setCommunityName(data);
   };
-  const [communityDescriptions, setCommunityDescription] = useState("");
+
+  // Community Description
+  const [communityDescription, setCommunityDescription] = useState("");
+  const handleDataFromCommunityDescription = (data: string) => {
+    setCommunityDescription(data);
+  };
 
   return (
     <>
@@ -30,25 +35,32 @@ const CommunityNameDescription: React.FC = ({}) => {
         <div className="grid w-[19rem] gap-4 py-4">
           <div className="grid w-[19rem] grid-cols-4 items-center gap-4">
             <div className="flex w-[19rem] flex-col">
-              <CommunityName onDataChange={handleDataFromCommunityName} />
+              <CommunityName
+                CommunityNameChange={handleDataFromCommunityName}
+              />
 
-              <CommunityDescription />
+              <CommunityDescription
+                CommunityDescriptionChange={handleDataFromCommunityDescription}
+              />
             </div>
           </div>
         </div>
 
         <div className="mx-2 flex w-full justify-center">
-          <div className="flex max-h-fit w-[14rem] flex-col rounded-xl px-2 py-2 font-bold shadow-lg">
-            <div className="overflow-hidden">
+          <div className="flex max-h-fit w-[14rem] flex-col rounded-xl px-2 py-2 font-bold shadow-md shadow-gray-400">
+            <div
+              className="break-words"
+              style={{ lineHeight: "1", marginBottom: "0" }}
+            >
               r/
-              {communityName === "" ? "communityname" : communityName}
+              {!communityName ? "communityname" : communityName}
             </div>
             <div className="flex flex-col text-[0.6rem] font-thin text-gray-500">
               <div>1 member ·1 online</div>
               <div className="max-h-[12rem] overflow-y-auto break-words py-1 text-xs text-black">
-                {!communityDescriptions
+                {!communityDescription
                   ? "Your community description"
-                  : communityDescriptions}
+                  : communityDescription}
               </div>
             </div>
           </div>

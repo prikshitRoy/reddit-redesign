@@ -4,10 +4,12 @@ import React, { useEffect, useState } from "react";
 import RedditInput from "@/components/ui/customUI/RedditInput";
 
 interface CommunityNameProps {
-  onDataChange: (data: string) => void;
+  CommunityNameChange: (data: string) => void;
 }
 
-const CommunityName: React.FC<CommunityNameProps> = ({ onDataChange }) => {
+const CommunityName: React.FC<CommunityNameProps> = ({
+  CommunityNameChange,
+}) => {
   // Community Name: Name and Char
   const [communityName, setCommunityName] = useState<string>("");
   const [charsRemaining, setCharsRemaining] = useState<number>(21);
@@ -30,7 +32,7 @@ const CommunityName: React.FC<CommunityNameProps> = ({ onDataChange }) => {
   // Handle Change: Community-Name Input Box Change Event
   const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value.length > 21) return;
-    onDataChange(event.target.value);
+    CommunityNameChange(event.target.value);
 
     setCommunityName(event.target.value);
     setCharsRemaining(21 - event.target.value.length);

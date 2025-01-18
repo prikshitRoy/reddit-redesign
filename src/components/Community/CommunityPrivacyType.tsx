@@ -6,8 +6,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/customUI/Communitydialog";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import React, { useEffect, useState } from "react";
 
 import { Community } from "@/firebaseServices/CommunityFirebase/CreateCommunity";

@@ -1,10 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { Search } from "lucide-react";
 import { useMergeRefs } from "use-callback-ref";
 import React, { useState, useEffect, useRef } from "react";
 
-interface InputProps {
+interface SearchBarProps {
+  className?: string;
   PlaceHolder?: string;
   setErrorByUser: boolean;
   setonBlurByUser: boolean;
@@ -13,9 +15,9 @@ interface InputProps {
   setBorderColorByUser?: string;
 }
 
-const RedditInput = React.forwardRef<
+const SearchBar = React.forwardRef<
   HTMLInputElement,
-  React.ComponentProps<"input"> & InputProps
+  React.ComponentProps<"input"> & SearchBarProps
 >(
   (
     {
@@ -39,6 +41,8 @@ const RedditInput = React.forwardRef<
 
     // Focus: Usign on Place Holder & Inputbox movement
     const [isFocused, setIsFocused] = useState<boolean>(false);
+
+    const [onBlur, setOnBlur] = useState<boolean>(false);
 
     // Border Color
     const [borderColor, setBorderColor] =
@@ -108,44 +112,30 @@ const RedditInput = React.forwardRef<
     return (
       <>
         <div
-          className={`w-fll group relative h-[2.9rem] rounded-2xl border-2 bg-gray-200 hover:bg-gray-300 ${borderColor}`}
+          className={cn(
+            `h-fit rounded-full border-[2px] bg-gray-200 px-3 py-1 ${borderColor}`,
+            className,
+          )}
           onClick={handleFocus}
         >
-          <span
-            className={`pointer-events-none absolute left-3 border-transparent transition-all duration-300 ${
-              isFocused || inputValue
-                ? "top-2 text-[12px]"
-                : "top-1/2 -translate-y-1/2 text-xs"
-            }`}
-          >
-            <span className="text-gray-600">
-              {PlaceHolder ? `${PlaceHolder}` : "Enter Place Holder"}
-            </span>
-            <span className="ml-1 text-red-500">*</span>
-          </span>
-          <input
-            ref={useMergeRefs([ref, inputRef])}
-            {...props}
-            type={type}
-            className={cn(
-              `absolute left-3 max-w-[calc(100%-1.5rem)] overflow-hidden bg-transparent text-[16px] leading-tight outline-none ${isFocused ? "bottom-0 mb-[9px] h-[24px]" : "top-1/2 h-[1rem] -translate-y-1/2"}`,
-              className,
-            )}
-            //value={inputValue} // Provides Input Value
-            //onFocus={handleFocus} // FocusOn
-            //onBlur={handleBlur} // onBlur
-          />
-
-          {setErrorByUser && (
-            <div className="absolute right-0 flex h-full w-10 items-center justify-center rounded-br-[18px] rounded-tr-[18px] bg-gray-200 px-3 text-red-800 group-hover:bg-gray-300">
-              O
+          <div className="flex flex-row items-center py-1">
+            <div className="h-fit w-6">
+              <Search className="h-[19px] w-[19px]" strokeWidth={1.4} />
             </div>
-          )}
+            <input
+              ref={useMergeRefs([ref, inputRef])}
+              {...props}
+              type={type}
+              placeholder={
+                PlaceHolder ? `${PlaceHolder}` : "Enter Place Holder"
+              }
+              className="w-full bg-transparent text-xs text-gray-900 placeholder-gray-600 outline-none placeholder:text-[15px] placeholder:font-[90]"
+            />
+          </div>
         </div>
       </>
     );
   },
 );
-RedditInput.displayName = "Input";
-
-export default RedditInput;
+SearchBar.displayName = "SearchBar";
+export default SearchBar;

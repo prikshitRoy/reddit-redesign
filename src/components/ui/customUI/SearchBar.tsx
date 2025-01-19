@@ -42,8 +42,6 @@ const SearchBar = React.forwardRef<
     // Focus: Usign on Place Holder & Inputbox movement
     const [isFocused, setIsFocused] = useState<boolean>(false);
 
-    const [onBlur, setOnBlur] = useState<boolean>(false);
-
     // Border Color
     const [borderColor, setBorderColor] =
       useState<string>("border-transparent");
@@ -55,7 +53,7 @@ const SearchBar = React.forwardRef<
       setBorderColor("border-blue-500");
     };
 
-    // OffFocus
+    // OnBlur
     const handleBlur = () => {
       if (inputValue && setErrorByUser) {
         setBorderColor("border-red-500");
@@ -92,9 +90,12 @@ const SearchBar = React.forwardRef<
       if (setOnFocusByUser) {
         handleFocus();
       }
+
+      // OnBlur
       if (setonBlurByUser) {
         handleBlur();
       }
+      // Click
     }, [
       setErrorByUser,
       setInputValueByUser,
@@ -113,7 +114,7 @@ const SearchBar = React.forwardRef<
       <>
         <div
           className={cn(
-            `h-fit rounded-full border-[2px] bg-gray-200 px-3 py-1 ${borderColor}`,
+            `flex h-8 items-center rounded-full border-[2px] bg-gray-200 px-3 py-1 ${borderColor}`,
             className,
           )}
           onClick={handleFocus}

@@ -6,10 +6,13 @@ import {
   DialogTitle,
 } from "@/components/ui/customUI/Communitydialog";
 import SearchBar from "@/components/ui/customUI/SearchBar";
+import TopicsData from "./RedditRefineTopics.json";
 import { useEffect, useState } from "react";
+import { X } from "lucide-react";
 
 const CommunityTopics: React.FC = () => {
-  const [topics, setTopics] = useState<string>("");
+  const [topicSearch, setTopicSearch] = useState<string>("");
+  const [topics, setTopics] = useState<string[]>([]);
 
   const [onFocus, setOnFocus] = useState<boolean>(false);
   const [onBlur, setOnBlur] = useState<boolean>(false);
@@ -26,10 +29,14 @@ const CommunityTopics: React.FC = () => {
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTopics(event.target.value);
+    setTopicSearch(event.target.value);
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    setOnFocus(false);
+    setOnBlur(false);
+    setError(false);
+  }, []);
 
   return (
     <>
@@ -38,19 +45,75 @@ const CommunityTopics: React.FC = () => {
         <DialogDescription className="text-xs text-gray-700">
           Add up to 3 topics to help interested redditors find your community.
         </DialogDescription>
-        <div className="h-96">
-          {/* Search */}
+        <div>
+          {/* Search Bar */}
           <SearchBar
             className="mt-9"
             PlaceHolder="Filter topics"
             setOnFocusByUser={onFocus}
             setonBlurByUser={onBlur}
             setErrorByUser={error}
-            setInputValueByUser={topics}
+            setInputValueByUser={topicSearch}
             onChange={handleChange}
             onFocus={HandleFocus}
             onBlur={HandleBlur}
           />
+          <h2 className="flex flex-row gap-1 pt-2 text-xs font-bold text-gray-700">
+            <div>Topics</div> <div>{topics.length}/3</div>
+          </h2>
+
+          {/* Topics Selected by User */}
+          <div className="mb-4 mt-1 flex h-6 w-[700px] flex-row gap-2">
+            {topics &&
+              topics.map((item) => (
+                <button className="flex h-fit w-fit rounded-[5px] border border-gray-300 px-2 py-1 text-[12px] font-semibold">
+                  {item}
+                  <button>
+                    <X
+                      className="ml-1 h-3 w-3 rounded-full bg-black stroke-white p-[3px]"
+                      style={{ strokeWidth: "4" }}
+                    />
+                  </button>
+                </button>
+              ))}
+          </div>
+
+          {/* List of Topics */}
+          <div className="max-h-[350px] overflow-y-auto break-words">
+            <ul>
+              {Object.entries(TopicsData).map(([category, subtopics]) => (
+                <li key={category} className="">
+                  <h3 className="text-xs font-bold text-gray-700">
+                    {category}
+                  </h3>
+                  <ul className="mb-4 mt-1 flex flex-wrap gap-1">
+                    {subtopics.map((subtopic: string) => (
+                      <button
+                        onClick={() => setTopics((prev) => [...prev, subtopic])}
+                      >
+                        <li
+                          key={subtopic}
+                          className={`mb-[2px] flex h-fit w-fit rounded-full bg-gray-200 px-2 py-[6px] text-[12px] font-semibold ${topics.includes(subtopic) ? "bg-gray-300" : "hover:bg-gray-300"}`}
+                        >
+                          {subtopic}
+                          {topics.includes(subtopic) ? (
+                            <button>
+                              <X
+                                className="ml-1 h-3 w-3 rounded-full bg-black stroke-white p-[3px]"
+                                style={{ strokeWidth: "4" }}
+                              />
+                            </button>
+                          ) : (
+                            ""
+                          )}
+                        </li>
+                      </button>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </DialogHeader>
     </>

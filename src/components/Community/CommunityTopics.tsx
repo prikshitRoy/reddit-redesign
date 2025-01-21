@@ -10,11 +10,6 @@ import TopicsData from "./RedditRefineTopics.json";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
 
-interface SearchParams {
-  searchIn: string;
-  searchFor: string;
-}
-
 const CommunityTopics: React.FC = () => {
   const [topicSearch, setTopicSearch] = useState<string>("");
   const [topics, setTopics] = useState<string[]>([]);
@@ -24,20 +19,31 @@ const CommunityTopics: React.FC = () => {
   const [error, setError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
 
-  // Search condtion
-  const isSearchActive = topicSearch === "";
-  function Search({ searchIn, searchFor }: SearchParams): boolean {
-    return (
-      searchFor !== "" &&
-      searchIn.toLowerCase().includes(searchFor.toLowerCase())
-    );
-  }
+  // Search
+  const filteredData = Object.entries(TopicsData)
+    .filter(([category, subtopics]) => {
+      if (topicSearch === "") {
+        return true; // Include all categories when search is empty
+      }
 
+      return subtopics.some((subtopic: string) =>
+        subtopic.toLowerCase().includes(topicSearch.toLowerCase()),
+      );
+    })
+    .map(([category, subtopics]) => ({
+      category,
+      subtopics: subtopics.filter((subtopic: string) =>
+        subtopic.toLowerCase().includes(topicSearch.toLowerCase()),
+      ),
+    }));
+
+  // OnFocus
   const HandleFocus = () => {
     setOnFocus(true);
     setOnBlur(false);
   };
 
+  // OnBlur
   const HandleBlur = () => {
     setOnBlur(true);
     setOnFocus(false);
@@ -64,6 +70,7 @@ const CommunityTopics: React.FC = () => {
     setTopicSearch(event.target.value);
   };
 
+  // Reset
   useEffect(() => {
     setTopicSearch("");
     setOnFocus(false);
@@ -116,56 +123,33 @@ const CommunityTopics: React.FC = () => {
             {error && <span>{errorMessage}</span>}
           </div>
 
-          {/* List of Topics */}
           <div className="max-h-[330px] overflow-y-auto break-words">
-            <ul>
-              {Object.entries(TopicsData).map(([category, subtopics]) => (
-                <li key={category}>
-                  {Search({ searchIn: category, searchFor: topicSearch }) && (
-                    <h3 className="text-xs font-bold text-gray-700">
-                      {category}
-                    </h3>
-                  )}
-                  {isSearchActive && (
-                    <h3 className="text-xs font-bold text-gray-700">
-                      {category}
-                    </h3>
-                  )}
+            {/* List of Topics */}
+            {filteredData.map(({ category, subtopics }) => (
+              <div key={category}>
+                {/* category */}
+                <h3 className="text-xs font-bold text-gray-700">{category}</h3>
 
-                  {/* subtopics */}
-                  <ul className="mb-4 mt-1 flex flex-wrap gap-1">
-                    {subtopics.map((subtopic: string) => (
-                      <button
-                        onClick={() => {
-                          HandleTopics(subtopic);
-                        }}
+                {/* subtopic */}
+                <ul className="mb-4 mt-1 flex flex-wrap gap-1">
+                  {subtopics.map((subtopic, index) => (
+                    <button
+                      onClick={() => {
+                        HandleTopics(subtopic);
+                      }}
+                    >
+                      <li
+                        key={index}
+                        className={`mb-[2px] flex h-fit w-fit items-center rounded-full bg-gray-200 pl-2 text-[12px] font-semibold ${topics.includes(subtopic) ? "bg-gray-300" : "py-[6px] pr-2 hover:bg-gray-300"}`}
                       >
-                        <li
-                          key={subtopic}
-                          className={`mb-[2px] flex h-fit w-fit items-center rounded-full bg-gray-200 pl-2 text-[12px] font-semibold ${topics.includes(subtopic) ? "bg-gray-300" : "py-[6px] pr-2 hover:bg-gray-300"}`}
-                        >
-                          {Search({
-                            searchIn: subtopic,
-                            searchFor: topicSearch,
-                          }) && (
-                            <>
-                              {subtopic}
-                              {topics.includes(subtopic) && <CloseButton />}
-                            </>
-                          )}
-                          {isSearchActive && (
-                            <>
-                              {subtopic}
-                              {topics.includes(subtopic) && <CloseButton />}
-                            </>
-                          )}
-                        </li>
-                      </button>
-                    ))}
-                  </ul>
-                </li>
-              ))}
-            </ul>
+                        {subtopic}
+                        {topics.includes(subtopic) && <CloseButton />}
+                      </li>
+                    </button>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
       </DialogHeader>

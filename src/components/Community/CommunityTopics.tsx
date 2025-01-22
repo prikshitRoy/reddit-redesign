@@ -32,9 +32,12 @@ const CommunityTopics: React.FC = () => {
     })
     .map(([category, subtopics]) => ({
       category,
-      subtopics: subtopics.filter((subtopic: string) =>
-        subtopic.toLowerCase().includes(topicSearch.toLowerCase()),
-      ),
+      subtopics:
+        topicSearch != ""
+          ? subtopics.filter((subtopic: string) =>
+              subtopic.toLowerCase().includes(topicSearch.toLowerCase()),
+            )
+          : subtopics,
     }));
 
   // OnFocus

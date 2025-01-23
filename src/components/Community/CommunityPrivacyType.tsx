@@ -9,6 +9,10 @@ import React, { useEffect, useState } from "react";
 
 import { Community } from "@/firebaseServices/CommunityFirebase/CreateCommunity";
 import PublicCommunityLogo from "@/lib/PublicCommunityLogo";
+import RestrictedCommunityLogo from "@/lib/RestrictedCommunit-logo";
+import PrivateCommunityLogo from "@/lib/PrivateCommunit-logo";
+import MatureCommunityLogo from "./MatureCommunit-logo";
+import { Switch } from "../ui/switch";
 
 const CommunityPrivacyType: React.FC = () => {
   // Community Type
@@ -41,7 +45,7 @@ const CommunityPrivacyType: React.FC = () => {
           <div>
             <div className="flex h-12 w-[35.8rem] items-center justify-between">
               <div className="flex items-center">
-                <PublicCommunityLogo className="ml-4 h-5 w-5" />
+                <PublicCommunityLogo className="ml-4 h-5 w-5 rounded-full border-[1.8px] border-gray-800 bg-gray-800" />
                 <div className="ml-4">
                   <div className="flex h-4 items-center text-sm">Public</div>
                   <div className="flex h-3 items-center text-xs text-gray-500">
@@ -59,7 +63,7 @@ const CommunityPrivacyType: React.FC = () => {
             </div>
             <div className="flex h-12 w-[35.8rem] items-center justify-between">
               <div className="flex items-center">
-                <PublicCommunityLogo className="ml-4 h-5 w-5" />
+                <RestrictedCommunityLogo className="ml-4 h-5 w-5" />
                 <div className="ml-4">
                   <div className="flex h-4 items-center text-sm">
                     Restricted
@@ -79,7 +83,7 @@ const CommunityPrivacyType: React.FC = () => {
             </div>
             <div className="flex h-12 w-[35.8rem] items-center justify-between">
               <div className="flex items-center">
-                <PublicCommunityLogo className="ml-4 h-5 w-5" />
+                <PrivateCommunityLogo className="ml-4 h-5 w-5" />
                 <div className="ml-4">
                   <div className="flex h-4 items-center text-sm">Private</div>
                   <div className="flex h-3 items-center text-xs text-gray-500">
@@ -98,7 +102,7 @@ const CommunityPrivacyType: React.FC = () => {
             <span className="my-3 flex h-px w-full border-0 bg-gray-300" />
             <div className="flex h-12 w-[35.8rem] items-center justify-between">
               <div className="flex items-center">
-                <PublicCommunityLogo className="ml-4 h-5 w-5" />
+                <MatureCommunityLogo className="ml-4 h-5 w-5" />
                 <div className="ml-4">
                   <div className="flex h-4 items-center text-sm">
                     Mature (18+)
@@ -108,12 +112,13 @@ const CommunityPrivacyType: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <input
-                className="mr-5"
-                type="radio"
+              <Switch
+                color="blue"
+                className="mr-5 bg-gray-200 data-[state=checked]:bg-green-500 data-[state=unchecked]:bg-red-500"
                 id="mature"
                 /* checked={CommunityType === "private"} */
                 /*  onChange={onCommunityTypeChange} */
+                aria-readonly
               />
             </div>
             <div className="mt-20 text-xs tracking-tight text-gray-500">

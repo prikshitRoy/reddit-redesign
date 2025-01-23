@@ -10,7 +10,7 @@ const PublicCommunityLogo = ({ className }: RedditIconProps) => {
       xmlns="http://www.w3.org/2000/svg"
       version="1.1"
       aria-hidden="true"
-      fill="#000000"
+      fill="#FFFFFF"
       height="16"
       width="16"
       icon-name="community-fill"

@@ -77,27 +77,20 @@ const Communities: React.FC = () => {
           )}
 
           {/* Footer */}
-          <DialogFooter className="center flex h-fit flex-row items-center justify-between">
+          <DialogFooter className="center mb-1 flex h-fit flex-row items-center justify-between">
             <div className="mr-auto flex flex-row gap-1">
-              {createCommunityView.view === "CommunityNameDiscription" ? (
-                <div className="h-[6px] w-[6px] rounded-full bg-black" />
-              ) : (
-                <div className="h-[6px] w-[6px] rounded-full bg-gray-400" />
-              )}
-              {createCommunityView.view === "StyleYourCommunity" ? (
-                <div className="h-[6px] w-[6px] rounded-full bg-black" />
-              ) : (
-                <div className="h-[6px] w-[6px] rounded-full bg-gray-400" />
-              )}
-              {createCommunityView.view === "CommunityTopics" ? (
-                <div className="h-[6px] w-[6px] rounded-full bg-black" />
-              ) : (
-                <div className="h-[6px] w-[6px] rounded-full bg-gray-400" />
-              )}
-              {createCommunityView.view === "CommunityPrivacyType" ? (
-                <div className="h-[6px] w-[6px] rounded-full bg-black" />
-              ) : (
-                <div className="h-[6px] w-[6px] rounded-full bg-gray-400" />
+              {viewValues.map((view) =>
+                createCommunityView.view === view ? (
+                  <div
+                    className="h-[6px] w-[6px] rounded-full bg-black"
+                    key={view}
+                  />
+                ) : (
+                  <div
+                    className="h-[6px] w-[6px] rounded-full bg-gray-400"
+                    key={view}
+                  />
+                ),
               )}
             </div>
             <div className="flex gap-1">

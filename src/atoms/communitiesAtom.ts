@@ -1,14 +1,36 @@
 import { Timestamp } from "@google-cloud/firestore";
 import { atom } from "recoil";
 
+// Community Type
+export type communityPrivacyType = "public" | "private" | "restricted";
+export type Mature = boolean;
+
+// Community Interface
 export interface Community {
   id: string;
   creatorId: string;
   numberofMembers: number;
-  privacyType: "public" | "private" | "restricted";
+  privacyType: communityPrivacyType;
+  mature: Mature;
   createdAt?: Timestamp;
   imageURL?: string;
 }
+
+// Default Community Value
+const defaultCommunity: Community = {
+  id: "",
+  creatorId: "",
+  numberofMembers: 1,
+  privacyType: "public",
+  mature: false,
+};
+
+export const Community = atom<Community>({
+  key: "community",
+  default: defaultCommunity,
+});
+
+// *******************************************************************
 
 export interface CommunitySnippets {
   communityId: string;

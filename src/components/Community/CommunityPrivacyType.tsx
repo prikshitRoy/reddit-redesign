@@ -12,8 +12,9 @@ import PublicCommunityLogo from "@/lib/PublicCommunityLogo";
 import RestrictedCommunityLogo from "@/lib/RestrictedCommunit-logo";
 import PrivateCommunityLogo from "@/lib/PrivateCommunit-logo";
 import MatureCommunityLogo from "../../lib/MatureCommunit-logo";
-import { Switch } from "../ui/switch";
+
 import { cn } from "@/lib/utils";
+import { RedditSwitch } from "../ui/customUI/RedditSwitch";
 
 interface PrivacyTypeProps {
   children?: React.ReactNode;
@@ -119,8 +120,12 @@ const CommunityPrivacyType: React.FC = () => {
             <span className="my-3 flex h-px w-full border-0 bg-gray-300" />
 
             {/* MATURE */}
-            <PrivacyType privacyType="mature">
-              <Switch
+            <PrivacyType
+              privacyType="mature"
+              className={`hover:hover:bg-gray-100`}
+              onClick={handleMatureContentToggle}
+            >
+              <RedditSwitch
                 color="blue"
                 className="mr-5 bg-gray-200 data-[state=checked]:bg-blue-800 data-[state=unchecked]:bg-gray-200"
                 id="mature"

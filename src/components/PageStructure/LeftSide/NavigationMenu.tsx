@@ -1,7 +1,7 @@
 "use client";
 
 import { createCommunityViewState } from "@/atoms/communitiesAtom";
-import Communities from "@/components/Community/DialogBox/CommunityModal";
+import Communities from "@/components/CreateCommunity/DialogBox/CommunityModal";
 import { auth } from "@/firebase/clientApp";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useSetRecoilState } from "recoil";

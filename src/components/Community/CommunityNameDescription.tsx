@@ -25,7 +25,7 @@ const CommunityNameDescription: React.FC = () => {
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Tell us about your community</DialogTitle>
+        <DialogTitle className="mb-1">Tell us about your community</DialogTitle>
         <DialogDescription className="text-xs text-black">
           A name and description help people understand what your community is
           all about.

@@ -13,7 +13,7 @@ const StyleYourCommunity: React.FC = () => {
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Style your community</DialogTitle>
+        <DialogTitle className="mb-1">Style your community</DialogTitle>
         <DialogDescription className="text-xs text-black">
           <div>
             Adding visual flair will catch new members attention and help

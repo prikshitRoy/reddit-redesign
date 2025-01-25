@@ -85,7 +85,7 @@ const CommunityTopics: React.FC = () => {
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Add topics</DialogTitle>
+        <DialogTitle className="mb-1">Add topics</DialogTitle>
         <DialogDescription className="text-xs text-gray-700">
           Add up to 3 topics to help interested redditors find your community.
         </DialogDescription>

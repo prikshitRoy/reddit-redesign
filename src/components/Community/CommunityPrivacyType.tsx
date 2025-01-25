@@ -45,7 +45,9 @@ const CommunityPrivacyType: React.FC = () => {
   return (
     <>
       <DialogHeader>
-        <DialogTitle>What kind of community is this?</DialogTitle>
+        <DialogTitle className="mb-1">
+          What kind of community is this?
+        </DialogTitle>
         <DialogDescription className="w-[718px] flex-wrap text-[14px] tracking-[-0.010em] text-gray-800">
           Decide who can view and contribute in your community. Only public
           communities show up in search.

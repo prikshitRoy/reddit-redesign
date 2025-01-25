@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/customUI/Communitydialog";
 import React, { useEffect, useState } from "react";
 
-import { Community } from "@/firebaseServices/CommunityFirebase/CreateCommunity";
 import PublicCommunityLogo from "@/lib/PublicCommunityLogo";
 import RestrictedCommunityLogo from "@/lib/RestrictedCommunit-logo";
 import PrivateCommunityLogo from "@/lib/PrivateCommunit-logo";
@@ -131,6 +130,7 @@ const CommunityPrivacyType: React.FC = () => {
                 id="mature"
                 checked={matureContent}
                 onCheckedChange={handleMatureContentToggle}
+                onClick={handleMatureContentToggle}
                 aria-readonly
               />
             </PrivacyType>

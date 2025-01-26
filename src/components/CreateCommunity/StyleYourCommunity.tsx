@@ -5,11 +5,14 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/customUI/Communitydialog";
-import { Input } from "../ui/input";
 import Image from "next/image";
 import RedditIcon from "@/lib/RedditIcon";
+import { useRecoilValue } from "recoil";
+import { Community, createCommunity } from "@/atoms/communitiesAtom";
 
 const StyleYourCommunity: React.FC = () => {
+  const Community = useRecoilValue(createCommunity);
+
   return (
     <>
       <DialogHeader>
@@ -70,7 +73,8 @@ const StyleYourCommunity: React.FC = () => {
                     className="m-0 w-40 break-words p-0"
                     style={{ lineHeight: "1", marginBottom: "0" }}
                   >
-                    r/{"communityname"}
+                    r/
+                    {Community.id != "" ? Community.id : "communityname"}
                   </div>
                   <div className="text-[0.6rem] font-thin text-gray-500">
                     1 member ·1 online
@@ -79,7 +83,9 @@ const StyleYourCommunity: React.FC = () => {
               </div>
 
               <div className="max-h-[12rem] overflow-y-auto break-words pt-1 text-[0.6rem] text-xs font-thin text-gray-700">
-                {"Your community description"}
+                {Community.description != ""
+                  ? Community.description
+                  : "Your community description"}
               </div>
             </div>
           </div>

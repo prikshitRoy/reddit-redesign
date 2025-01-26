@@ -2,6 +2,11 @@
 
 import React, { useEffect, useState } from "react";
 import RedditInput from "@/components/ui/customUI/RedditInput";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
+import {
+  createCommunity,
+  createCommunityViewState,
+} from "@/atoms/communitiesAtom";
 
 interface CommunityNameProps {
   CommunityNameChange: (data: string) => void;
@@ -13,6 +18,11 @@ const CommunityName: React.FC<CommunityNameProps> = ({
   // Community Name: Name and Char
   const [communityName, setCommunityName] = useState<string>("");
   const [charsRemaining, setCharsRemaining] = useState<number>(21);
+
+  // Recoil: DialogBox view
+  const [CommunityView, setCommunityView] = useRecoilState(
+    createCommunityViewState,
+  );
 
   // OnFocus State: Community Name
   const [isFocusedCommunityName, setIsFocusedCommunityName] =
@@ -29,12 +39,34 @@ const CommunityName: React.FC<CommunityNameProps> = ({
   const [errorMessageCommunityName, setErrorMesageCommunityName] =
     useState<string>("");
 
+  //Recoil Atom
+  const setCommunity = useSetRecoilState(createCommunity);
+  const Community = useRecoilValue(createCommunity);
+
   // Handle Change: Community-Name Input Box Change Event
   const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value.length > 21) return;
-    CommunityNameChange(event.target.value);
 
+    CommunityNameChange(event.target.value);
     setCommunityName(event.target.value);
+    setCommunity((prev) => ({
+      ...prev,
+      id: event.target.value,
+    }));
+
+    /*     if (event.target.value.length > 3) {
+      setCommunityView((prev) => ({
+        ...prev,
+        disable: false,
+      }));
+    } */
+    /*     if (event.target.value.length < 3) {
+      setCommunityView((prev) => ({
+        ...prev,
+        disable: true,
+      }));
+    } */
+
     setCharsRemaining(21 - event.target.value.length);
   };
 
@@ -85,6 +117,13 @@ const CommunityName: React.FC<CommunityNameProps> = ({
     setErrorCommunityName(false);
     setErrorMesageCommunityName("");
   }, []);
+
+  useEffect(() => {
+    if (communityName === "" && Community.id != "") {
+      setCommunityName(Community.id);
+      CommunityNameChange(Community.id);
+    }
+  }, [communityName]);
 
   return (
     <>

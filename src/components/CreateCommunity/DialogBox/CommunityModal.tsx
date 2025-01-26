@@ -7,48 +7,88 @@ import {
 import React from "react";
 
 import CommunityNameDescription from "../CommunityNameDescription";
-import { useRecoilState, useRecoilValue } from "recoil";
-import { createCommunityViewState } from "@/atoms/communitiesAtom";
+import { useRecoilState } from "recoil";
+import {
+  createCommunity,
+  defaultCommunity,
+  createCommunityViewState,
+} from "@/atoms/communitiesAtom";
 import { DialogFooter } from "@/components/ui/customUI/dialog";
 import StyleYourCommunity from "../StyleYourCommunity";
 import CommunityTopics from "../CommunityTopics";
 import CommunityPrivacyType from "../CommunityPrivacyType";
 import { viewValues } from "@/atoms/communitiesAtom";
-import { Community } from "@/firebaseServices/CommunityFirebase/CreateCommunity";
+import {
+  Community,
+  UniqueCommunityName,
+} from "@/firebaseServices/CommunityFirebase/CreateCommunity";
 
 const Communities: React.FC = () => {
   // Firebase Hook to create Community
   const { CreateCommunity, communityStatus, errorInCreatingCommunity } =
     Community();
+  // Firebase Hook to check community Name
+  const { CreateCommunityName, errorMessage } = UniqueCommunityName();
 
-  // Recoil
-  const [createCommunityView, setcreateCommunityView] = useRecoilState(
+  // Recoil: DialogBox view to Create a Community
+  const [CommunityView, setCommunityView] = useRecoilState(
     createCommunityViewState,
   );
-  // Recoil Value
-  const CommunityViewStateValue = useRecoilValue(createCommunityViewState);
+
+  // Recoil Value: Community Data to create a Community
+  const [CommunityData, setCommunityData] = useRecoilState(createCommunity);
 
   // Close Button
   const handleClose = () => {
-    setcreateCommunityView((prev) => ({
+    setCommunityView((prev) => ({
       ...prev,
       open: false,
+      disable: true,
     }));
+    setCommunityData(defaultCommunity);
   };
 
   // Next Button
   const HandleNext = () => {
-    const index = viewValues.indexOf(CommunityViewStateValue.view);
-    setcreateCommunityView((prev) => ({
-      ...prev,
-      view: viewValues[index + 1],
-    }));
+    const index = viewValues.indexOf(CommunityView.view);
+    if (
+      CommunityView.view === "CommunityNameDiscription" &&
+      CommunityData.id != "" &&
+      CommunityData.description != ""
+    ) {
+      setCommunityView((prev) => ({
+        ...prev,
+        view: viewValues[index + 1],
+      }));
+    }
+    console.log(
+      "CommunityData.communityTopics.length",
+      CommunityData.communityTopics.length,
+    );
+
+    if (
+      CommunityView.view === "CommunityTopics" &&
+      CommunityData.communityTopics.length > 0
+    ) {
+      setCommunityView((prev) => ({
+        ...prev,
+        view: viewValues[index + 1],
+      }));
+    }
+
+    if (CommunityView.view === "StyleYourCommunity") {
+      setCommunityView((prev) => ({
+        ...prev,
+        view: viewValues[index + 1],
+      }));
+      CommunityView.disable = false;
+    }
   };
 
   // Back Button
   const handleBack = () => {
-    const index = viewValues.indexOf(CommunityViewStateValue.view);
-    setcreateCommunityView((prev) => ({
+    const index = viewValues.indexOf(CommunityView.view);
+    setCommunityView((prev) => ({
       ...prev,
       view: viewValues[index - 1],
     }));
@@ -58,21 +98,19 @@ const Communities: React.FC = () => {
 
   return (
     <>
-      <Dialog open={createCommunityView.open} onOpenChange={handleClose}>
+      <Dialog open={CommunityView.open} onOpenChange={handleClose}>
         <DialogContent
           className="w-full pb-1"
           onOpenAutoFocus={(e) => e.preventDefault()}
         >
-          {createCommunityView.view === "CommunityNameDiscription" && (
+          {CommunityView.view === "CommunityNameDiscription" && (
             <CommunityNameDescription />
           )}
-          {createCommunityView.view === "StyleYourCommunity" && (
+          {CommunityView.view === "StyleYourCommunity" && (
             <StyleYourCommunity />
           )}
-          {createCommunityView.view === "CommunityTopics" && (
-            <CommunityTopics />
-          )}
-          {createCommunityView.view === "CommunityPrivacyType" && (
+          {CommunityView.view === "CommunityTopics" && <CommunityTopics />}
+          {CommunityView.view === "CommunityPrivacyType" && (
             <CommunityPrivacyType />
           )}
 
@@ -80,7 +118,7 @@ const Communities: React.FC = () => {
           <DialogFooter className="center mb-1 flex h-fit flex-row items-center justify-between">
             <div className="mr-auto flex flex-row gap-1">
               {viewValues.map((view) =>
-                createCommunityView.view === view ? (
+                CommunityView.view === view ? (
                   <div
                     className="h-[6px] w-[6px] rounded-full bg-black"
                     key={view}
@@ -95,7 +133,7 @@ const Communities: React.FC = () => {
             </div>
             <div className="flex gap-1">
               {/* {viewValues.includes(wantistheValue.view) } */}
-              {viewValues.indexOf(CommunityViewStateValue.view) === 0 && (
+              {viewValues.indexOf(CommunityView.view) === 0 && (
                 <button
                   type="submit"
                   className="rounded-full bg-gray-200 p-2 text-xs font-semibold"
@@ -104,7 +142,7 @@ const Communities: React.FC = () => {
                   Cancel
                 </button>
               )}
-              {viewValues.indexOf(CommunityViewStateValue.view) != 0 && (
+              {viewValues.indexOf(CommunityView.view) != 0 && (
                 <button
                   type="submit"
                   className="rounded-full bg-gray-200 p-2 text-xs font-semibold"
@@ -114,19 +152,21 @@ const Communities: React.FC = () => {
                 </button>
               )}
 
-              {viewValues.indexOf(CommunityViewStateValue.view) <= 2 ? (
+              {viewValues.indexOf(CommunityView.view) <= 2 ? (
                 <button
                   type="submit"
-                  className="rounded-full bg-gray-200 p-2 text-xs font-semibold"
+                  className={`rounded-full p-2 text-xs font-semibold ${CommunityView.disable ? "bg-gray-100 text-gray-400" : "bg-gray-200"}`}
                   onClick={HandleNext}
+                  disabled={CommunityView.disable}
                 >
                   Next
                 </button>
               ) : (
                 <button
                   type="submit"
-                  className="rounded-full bg-gray-200 p-2 text-xs font-semibold"
+                  className={`rounded-full p-2 text-xs font-semibold ${CommunityView.disable ? "bg-gray-100 text-gray-400" : "bg-gray-200"}`}
                   onClick={handleCreateCommunity}
+                  disabled={CommunityView.disable}
                 >
                   Create Community
                 </button>

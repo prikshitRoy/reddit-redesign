@@ -3,6 +3,8 @@
 import { cn } from "@/lib/utils";
 import { useMergeRefs } from "use-callback-ref";
 import React, { useState, useEffect, useRef } from "react";
+import { useRecoilValue } from "recoil";
+import { createCommunity } from "@/atoms/communitiesAtom";
 
 interface InputProps {
   PlaceHolder?: string;
@@ -36,6 +38,7 @@ const RedditInput = React.forwardRef<
 
     // Input Value
     const [inputValue, setInputValue] = useState<string>("");
+    const Community = useRecoilValue(createCommunity);
 
     // Focus: Usign on Place Holder & Inputbox movement
     const [isFocused, setIsFocused] = useState<boolean>(false);
@@ -113,7 +116,7 @@ const RedditInput = React.forwardRef<
         >
           <span
             className={`pointer-events-none absolute left-3 border-transparent transition-all duration-300 ${
-              isFocused || inputValue
+              isFocused || inputValue || Community.id
                 ? "top-2 text-[12px]"
                 : "top-1/2 -translate-y-1/2 text-xs"
             }`}
@@ -128,9 +131,10 @@ const RedditInput = React.forwardRef<
             {...props}
             type={type}
             className={cn(
-              `absolute left-3 max-w-[calc(100%-1.5rem)] overflow-hidden bg-transparent text-[16px] leading-tight outline-none ${isFocused ? "bottom-0 mb-[9px] h-[24px]" : "top-1/2 h-[1rem] -translate-y-1/2"}`,
+              `absolute left-3 max-w-[calc(100%-1.5rem)] overflow-hidden bg-transparent text-[16px] leading-tight outline-none ${isFocused || inputValue ? "bottom-0 mb-[9px] h-[24px]" : "top-1/2 h-[1rem] -translate-y-1/2"}`,
               className,
             )}
+
             //value={inputValue} // Provides Input Value
             //onFocus={handleFocus} // FocusOn
             //onBlur={handleBlur} // onBlur

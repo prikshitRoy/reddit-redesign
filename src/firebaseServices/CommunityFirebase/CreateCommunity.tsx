@@ -1,7 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
-import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  runTransaction,
+  serverTimestamp,
+} from "firebase/firestore";
 import { auth, db } from "@/firebase/clientApp";
 import { useAuthState } from "react-firebase-hooks/auth";
 
@@ -60,5 +65,28 @@ export function Community() {
     CreateCommunity,
     errorInCreatingCommunity,
     communityStatus,
+  };
+}
+
+// Checks for Unique Community Name
+export function UniqueCommunityName() {
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const CreateCommunityName = async ({
+    communityName,
+  }: CommunityCredentials) => {
+    // Looking at: Firebase Database, for "communityName" in collection "communities".
+    const communityDocRef = doc(db, "communities", communityName);
+
+    //Check if community exists in DB
+    const communityDoc = await getDoc(communityDocRef);
+    if (communityDoc.exists()) {
+      setErrorMessage(`Sorry, r/${communityName} is taken. Try another.`);
+    }
+  };
+
+  return {
+    CreateCommunityName,
+    errorMessage,
   };
 }

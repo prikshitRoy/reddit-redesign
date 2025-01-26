@@ -8,6 +8,8 @@ export type Mature = boolean;
 // Community Interface
 export interface Community {
   id: string;
+  description: string;
+  communityTopics: string[];
   creatorId: string;
   numberofMembers: number;
   privacyType: communityPrivacyType;
@@ -17,16 +19,18 @@ export interface Community {
 }
 
 // Default Community Value
-const defaultCommunity: Community = {
+export const defaultCommunity: Community = {
   id: "",
+  description: "",
+  communityTopics: [],
   creatorId: "",
   numberofMembers: 1,
   privacyType: "public",
   mature: false,
 };
 
-export const Community = atom<Community>({
-  key: "community",
+export const createCommunity = atom<Community>({
+  key: "createCommunity",
   default: defaultCommunity,
 });
 

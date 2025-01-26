@@ -8,8 +8,12 @@ import {
 import React, { useState } from "react";
 import CommunityName from "./CommunityName";
 import CommunityDescription from "./CommunityDescription";
+import { useRecoilState } from "recoil";
+import { createCommunity } from "@/atoms/communitiesAtom";
 
 const CommunityNameDescription: React.FC = () => {
+  const [CommunityData, setCommunityData] = useRecoilState(createCommunity);
+
   // Community Name
   const [communityName, setCommunityName] = useState("");
   const handleDataFromCommunityName = (data: string) => {
@@ -53,14 +57,14 @@ const CommunityNameDescription: React.FC = () => {
               style={{ lineHeight: "1", marginBottom: "0" }}
             >
               r/
-              {!communityName ? "communityname" : communityName}
+              {!CommunityData.id ? "communityname" : CommunityData.id}
             </div>
             <div className="flex flex-col text-[0.6rem] font-thin text-gray-500">
               <div>1 member ·1 online</div>
               <div className="max-h-[12rem] overflow-y-auto break-words py-1 text-xs text-black">
-                {!communityDescription
+                {!CommunityData.description
                   ? "Your community description"
-                  : communityDescription}
+                  : CommunityData.description}
               </div>
             </div>
           </div>

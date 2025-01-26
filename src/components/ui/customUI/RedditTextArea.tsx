@@ -3,6 +3,8 @@
 import { cn } from "@/lib/utils";
 import { useMergeRefs } from "use-callback-ref";
 import React, { useState, useEffect, useRef } from "react";
+import { useRecoilValue } from "recoil";
+import { createCommunity } from "@/atoms/communitiesAtom";
 
 interface RedditTextAreaProps {
   TextAreaPlaceHolder?: string;
@@ -35,6 +37,7 @@ const RedditTextArea = React.forwardRef<
 
     // Input Value
     const [inputValue, setInputValue] = useState<string>("");
+    const Community = useRecoilValue(createCommunity);
 
     // Focus: Usign to Place Holder & Inputbox movement
     const [isFocused, setIsFocused] = useState<boolean>(false);
@@ -113,7 +116,7 @@ const RedditTextArea = React.forwardRef<
         >
           <span
             className={`pointer-events-none absolute left-3 border-transparent transition-all duration-300 ${
-              isFocused || inputValue
+              isFocused || inputValue || Community.description
                 ? "top-2 text-[12px]"
                 : "top-5 -translate-y-1/2 text-xs"
             }`}
@@ -130,7 +133,9 @@ const RedditTextArea = React.forwardRef<
             {...props}
             className={cn(
               `absolute h-full max-h-[calc(100%-2rem)] w-full max-w-[calc(100%-1rem)] resize-none border border-transparent bg-transparent px-3 py-2 text-base outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm ${
-                isFocused ? "bottom-2" : "top-1/2 -translate-y-1/2"
+                isFocused || inputValue
+                  ? "bottom-2"
+                  : "top-1/2 -translate-y-1/2"
               } `,
               className,
             )}

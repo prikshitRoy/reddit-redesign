@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import RedditTextArea from "@/components/ui/customUI/RedditTextArea";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { createCommunity } from "@/atoms/communitiesAtom";
 
 interface CommunityNameProps {
   CommunityDescriptionChange: (data: string) => void;
@@ -31,12 +33,21 @@ const CommunityDescription: React.FC<CommunityNameProps> = ({
   // Loading
   const [loading, setloading] = useState<boolean>(false);
 
+  //Recoil Atom
+  const [CommunityData, setCommunityData] = useRecoilState(createCommunity);
+
   // Handle Change: Community-Description Text Area Change Event
   const handleChangeDescription = (
     event: React.ChangeEvent<HTMLTextAreaElement>,
   ) => {
     setDescription(event.target.value);
     CommunityDescriptionChange(event.target.value);
+
+    setCommunityData((prev) => ({
+      ...prev,
+      description: event.target.value,
+    }));
+
     setTotalDescriptionChars(event.target.value.length);
 
     if (event.target.value.length > 500) {
@@ -72,6 +83,13 @@ const CommunityDescription: React.FC<CommunityNameProps> = ({
     setBlurDescription(false);
     setTotalDescriptionChars(0);
   }, []);
+
+  useEffect(() => {
+    if (description === "" && CommunityData.description != "") {
+      setDescription(CommunityData.description);
+      CommunityDescriptionChange(CommunityData.description);
+    }
+  }, [description]);
 
   return (
     <>

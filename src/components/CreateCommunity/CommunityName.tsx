@@ -6,7 +6,9 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import {
   createCommunity,
   createCommunityViewState,
+  validCommunityName,
 } from "@/atoms/communitiesAtom";
+import { UniqueCommunityName } from "@/firebaseServices/CommunityFirebase/CreateCommunity";
 
 interface CommunityNameProps {
   CommunityNameChange: (data: string) => void;
@@ -23,6 +25,11 @@ const CommunityName: React.FC<CommunityNameProps> = ({
   const [CommunityView, setCommunityView] = useRecoilState(
     createCommunityViewState,
   );
+
+  // Recoil: validCommunityName provide UniqueCommunityName State
+  //Firebase Hook: Ckeck DB for UniqueCommunityName
+  const { CheckCommunityName } = UniqueCommunityName();
+  const [valid, setValid] = useRecoilState(validCommunityName);
 
   // OnFocus State: Community Name
   const [isFocusedCommunityName, setIsFocusedCommunityName] =
@@ -43,6 +50,11 @@ const CommunityName: React.FC<CommunityNameProps> = ({
   const setCommunity = useSetRecoilState(createCommunity);
   const Community = useRecoilValue(createCommunity);
 
+  const isCommunityNameValid = async () => {
+    if (Community.id === "") return;
+    const sameName = await CheckCommunityName();
+  };
+
   // Handle Change: Community-Name Input Box Change Event
   const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.value.length > 21) return;
@@ -54,18 +66,11 @@ const CommunityName: React.FC<CommunityNameProps> = ({
       id: event.target.value,
     }));
 
-    /*     if (event.target.value.length > 3) {
-      setCommunityView((prev) => ({
-        ...prev,
-        disable: false,
-      }));
-    } */
-    /*     if (event.target.value.length < 3) {
-      setCommunityView((prev) => ({
-        ...prev,
-        disable: true,
-      }));
-    } */
+    // Disable Button
+    setCommunityView((prev) => ({
+      ...prev,
+      disable: event.target.value.length <= 3,
+    }));
 
     setCharsRemaining(21 - event.target.value.length);
   };
@@ -76,13 +81,15 @@ const CommunityName: React.FC<CommunityNameProps> = ({
     setBlurCommunityName(false);
     setErrorCommunityName(false);
     setErrorMesageCommunityName("");
+    setValid({ nameExist: false });
   };
 
   // OnBlur: Community Name
-  const handleBlur = () => {
+  const handleBlur = async () => {
     setBlurCommunityName(true);
     setIsFocusedCommunityName(false);
     CommunityNameCommunityDiscriptionCheck();
+    isCommunityNameValid();
   };
 
   //VALIDITY CHECK: Community-Name & Community-Discription
@@ -124,6 +131,23 @@ const CommunityName: React.FC<CommunityNameProps> = ({
       CommunityNameChange(Community.id);
     }
   }, [communityName]);
+
+  const HandleError = () => {
+    setErrorCommunityName(false);
+    setErrorMesageCommunityName("");
+  };
+
+  useEffect(() => {
+    if (valid.nameExist) {
+      setErrorCommunityName(true);
+      setErrorMesageCommunityName(
+        `${Community.id} already taken. Try another.`,
+      );
+    }
+    if (!valid.nameExist) {
+      HandleError();
+    }
+  }, [valid.nameExist]);
 
   return (
     <>

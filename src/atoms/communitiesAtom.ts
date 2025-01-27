@@ -62,7 +62,7 @@ export const CommunityState = atom<CommunityState>({
 // Which Dilog-Box should be open is manage by "CreateCommunityViewState"
 export interface CreateCommunityViewState {
   open: boolean;
-  disable?: boolean;
+  disable: boolean;
   view:
     | "CommunityNameDiscription"
     | "StyleYourCommunity"
@@ -87,3 +87,18 @@ export const viewValues: CreateCommunityViewState["view"][] = [
   "CommunityTopics",
   "CommunityPrivacyType",
 ];
+
+/* Community Name Validation State */
+interface ValidCommunityName {
+  nameExist: boolean;
+}
+
+const defaultValidCommunityName: ValidCommunityName = {
+  nameExist: false,
+};
+
+export const validCommunityName = atom<ValidCommunityName>({
+  key: "validCommunityName",
+  default: defaultValidCommunityName,
+});
+// *******************************************************************

@@ -9,6 +9,8 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "@/firebase/clientApp";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { createCommunity, validCommunityName } from "@/atoms/communitiesAtom";
 
 interface CommunityCredentials {
   communityName: string;
@@ -70,23 +72,26 @@ export function Community() {
 
 // Checks for Unique Community Name
 export function UniqueCommunityName() {
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const communityData = useRecoilValue(createCommunity);
+  const [valid, setValid] = useRecoilState(validCommunityName);
 
-  const CreateCommunityName = async ({
-    communityName,
-  }: CommunityCredentials) => {
+  const CheckCommunityName = async () => {
     // Looking at: Firebase Database, for "communityName" in collection "communities".
-    const communityDocRef = doc(db, "communities", communityName);
+    const communityDocRef = doc(db, "communities", communityData.id);
 
     //Check if community exists in DB
     const communityDoc = await getDoc(communityDocRef);
     if (communityDoc.exists()) {
-      setErrorMessage(`Sorry, r/${communityName} is taken. Try another.`);
+      // Indicates that there was an error
+      setValid({ nameExist: true });
+      return true;
     }
+    // No error
+    setValid({ nameExist: false });
+    return false;
   };
 
   return {
-    CreateCommunityName,
-    errorMessage,
+    CheckCommunityName,
   };
 }

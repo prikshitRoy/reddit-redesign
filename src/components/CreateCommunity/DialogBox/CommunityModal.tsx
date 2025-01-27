@@ -12,6 +12,7 @@ import {
   createCommunity,
   defaultCommunity,
   createCommunityViewState,
+  validCommunityName,
 } from "@/atoms/communitiesAtom";
 import { DialogFooter } from "@/components/ui/customUI/dialog";
 import StyleYourCommunity from "../StyleYourCommunity";
@@ -28,7 +29,8 @@ const Communities: React.FC = () => {
   const { CreateCommunity, communityStatus, errorInCreatingCommunity } =
     Community();
   // Firebase Hook to check community Name
-  const { CreateCommunityName, errorMessage } = UniqueCommunityName();
+  const { CheckCommunityName } = UniqueCommunityName();
+  const [valid, setValid] = useRecoilState(validCommunityName);
 
   // Recoil: DialogBox view to Create a Community
   const [CommunityView, setCommunityView] = useRecoilState(
@@ -46,25 +48,29 @@ const Communities: React.FC = () => {
       disable: true,
     }));
     setCommunityData(defaultCommunity);
+
+    setValid({ nameExist: false });
   };
 
   // Next Button
-  const HandleNext = () => {
+  const HandleNext = async () => {
     const index = viewValues.indexOf(CommunityView.view);
+
     if (
       CommunityView.view === "CommunityNameDiscription" &&
       CommunityData.id != "" &&
       CommunityData.description != ""
     ) {
+      const sameName = await CheckCommunityName();
+
+      // If Same community Name exist then return
+      if (sameName) return;
+
       setCommunityView((prev) => ({
         ...prev,
         view: viewValues[index + 1],
       }));
     }
-    console.log(
-      "CommunityData.communityTopics.length",
-      CommunityData.communityTopics.length,
-    );
 
     if (
       CommunityView.view === "CommunityTopics" &&

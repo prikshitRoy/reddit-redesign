@@ -28,6 +28,7 @@ const NavigationMenu: React.FC = () => {
                 setcreateCommunityViewState({
                   open: true,
                   view: "CommunityNameDiscription",
+                  disable: true,
                 })
               }
             >

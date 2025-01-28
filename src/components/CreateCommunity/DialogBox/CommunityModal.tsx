@@ -21,6 +21,7 @@ import CommunityPrivacyType from "../CommunityPrivacyType";
 import { viewValues } from "@/atoms/communitiesAtom";
 import {
   Community,
+  deleteDocumentsByUser,
   UniqueCommunityName,
 } from "@/firebaseServices/CommunityFirebase/CreateCommunity";
 

@@ -3,6 +3,8 @@
 import { createCommunityViewState } from "@/atoms/communitiesAtom";
 import Communities from "@/components/CreateCommunity/DialogBox/CommunityModal";
 import { auth } from "@/firebase/clientApp";
+import { useDeleteReservedCommunityNames } from "@/firebaseServices/CommunityFirebase/DeleteReservedCommunityNames";
+
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useSetRecoilState } from "recoil";
 
@@ -11,6 +13,19 @@ const NavigationMenu: React.FC = () => {
   const setcreateCommunityViewState = useSetRecoilState(
     createCommunityViewState,
   );
+
+  const { deleteReservedNames } = useDeleteReservedCommunityNames();
+
+  // Create Community Function
+  const HandleCreateCommunityButton = () => {
+    setcreateCommunityViewState({
+      open: true,
+      view: "CommunityNameDiscription",
+      disable: true, // Next button
+    });
+    // Deletes reserveCommunityNames created < 30 min ago
+    deleteReservedNames();
+  };
 
   return (
     <>
@@ -24,13 +39,7 @@ const NavigationMenu: React.FC = () => {
             <div className="text-gray-400">COMMUNITIES</div>
             <button
               className="w-full hover:bg-gray-100"
-              onClick={() =>
-                setcreateCommunityViewState({
-                  open: true,
-                  view: "CommunityNameDiscription",
-                  disable: true,
-                })
-              }
+              onClick={() => HandleCreateCommunityButton()}
             >
               Create a Community
             </button>

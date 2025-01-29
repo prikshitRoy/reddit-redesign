@@ -8,7 +8,7 @@ import {
   createCommunityViewState,
   validCommunityName,
 } from "@/atoms/communitiesAtom";
-import { UniqueCommunityName } from "@/firebaseServices/CommunityFirebase/CreateCommunity";
+import { useCreateReserveCommunityName } from "@/firebaseServices/CommunityFirebase/CreateReservedCommunityNames";
 
 interface CommunityNameProps {
   CommunityNameChange: (data: string) => void;
@@ -28,7 +28,7 @@ const CommunityName: React.FC<CommunityNameProps> = ({
 
   // Recoil: validCommunityName provide UniqueCommunityName State
   //Firebase Hook: Ckeck DB for UniqueCommunityName
-  const { CheckCommunityName } = UniqueCommunityName();
+  const { CheckCommunityName } = useCreateReserveCommunityName();
   const [valid, setValid] = useRecoilState(validCommunityName);
 
   // OnFocus State: Community Name
@@ -89,7 +89,7 @@ const CommunityName: React.FC<CommunityNameProps> = ({
     setBlurCommunityName(true);
     setIsFocusedCommunityName(false);
     CommunityNameCommunityDiscriptionCheck();
-    isCommunityNameValid();
+    communityName.length > 3 && isCommunityNameValid();
   };
 
   //VALIDITY CHECK: Community-Name & Community-Discription

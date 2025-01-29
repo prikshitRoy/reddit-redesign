@@ -19,18 +19,16 @@ import StyleYourCommunity from "../StyleYourCommunity";
 import CommunityTopics from "../CommunityTopics";
 import CommunityPrivacyType from "../CommunityPrivacyType";
 import { viewValues } from "@/atoms/communitiesAtom";
-import {
-  Community,
-  deleteDocumentsByUser,
-  UniqueCommunityName,
-} from "@/firebaseServices/CommunityFirebase/CreateCommunity";
+import { Community } from "@/firebaseServices/CommunityFirebase/CreateCommunity";
+import { useCreateReserveCommunityName } from "@/firebaseServices/CommunityFirebase/CreateReservedCommunityNames";
+import { useDeleteReservedCommunityNames } from "@/firebaseServices/CommunityFirebase/DeleteReservedCommunityNames";
 
 const Communities: React.FC = () => {
   // Firebase Hook to create Community
   const { CreateCommunity, communityStatus, errorInCreatingCommunity } =
     Community();
   // Firebase Hook to check community Name
-  const { CheckCommunityName } = UniqueCommunityName();
+  const { CheckCommunityName } = useCreateReserveCommunityName();
   const [valid, setValid] = useRecoilState(validCommunityName);
 
   // Recoil: DialogBox view to Create a Community
@@ -41,6 +39,10 @@ const Communities: React.FC = () => {
   // Recoil Value: Community Data to create a Community
   const [CommunityData, setCommunityData] = useRecoilState(createCommunity);
 
+  // Delete all reserved community names of user
+  const { deleteAllReservedCommunityNamesOfUser } =
+    useDeleteReservedCommunityNames();
+
   // Close Button
   const handleClose = () => {
     setCommunityView((prev) => ({
@@ -49,8 +51,8 @@ const Communities: React.FC = () => {
       disable: true,
     }));
     setCommunityData(defaultCommunity);
-
     setValid({ nameExist: false });
+    deleteAllReservedCommunityNamesOfUser();
   };
 
   // Next Button

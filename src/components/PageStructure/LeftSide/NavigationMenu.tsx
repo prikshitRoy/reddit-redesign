@@ -3,7 +3,7 @@
 import { createCommunityViewState } from "@/atoms/communitiesAtom";
 import Communities from "@/components/CreateCommunity/DialogBox/CommunityModal";
 import { auth } from "@/firebase/clientApp";
-import { useDeleteReservedCommunityNames } from "@/firebaseServices/CommunityFirebase/DeleteReservedCommunityNames";
+import { useDeleteReservedCommunityNames } from "@/firebaseServices/CommunityFirebase/CreatedCommunityFirebaseHooks/DeleteReservedCommunityNames";
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useSetRecoilState } from "recoil";

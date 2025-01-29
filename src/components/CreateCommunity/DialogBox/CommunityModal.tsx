@@ -19,9 +19,9 @@ import StyleYourCommunity from "../StyleYourCommunity";
 import CommunityTopics from "../CommunityTopics";
 import CommunityPrivacyType from "../CommunityPrivacyType";
 import { viewValues } from "@/atoms/communitiesAtom";
-import { Community } from "@/firebaseServices/CommunityFirebase/CreateCommunity";
-import { useCreateReserveCommunityName } from "@/firebaseServices/CommunityFirebase/CreateReservedCommunityNames";
-import { useDeleteReservedCommunityNames } from "@/firebaseServices/CommunityFirebase/DeleteReservedCommunityNames";
+import { Community } from "@/firebaseServices/CommunityFirebase/CreatedCommunityFirebaseHooks/CreateCommunity";
+import { useCreateReserveCommunityName } from "@/firebaseServices/CommunityFirebase/CreatedCommunityFirebaseHooks/CreateReservedCommunityNames";
+import { useDeleteReservedCommunityNames } from "@/firebaseServices/CommunityFirebase/CreatedCommunityFirebaseHooks/DeleteReservedCommunityNames";
 
 const Communities: React.FC = () => {
   // Firebase Hook to create Community

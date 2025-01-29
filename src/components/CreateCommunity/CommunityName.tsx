@@ -8,7 +8,7 @@ import {
   createCommunityViewState,
   validCommunityName,
 } from "@/atoms/communitiesAtom";
-import { useCreateReserveCommunityName } from "@/firebaseServices/CommunityFirebase/CreateReservedCommunityNames";
+import { useCreateReserveCommunityName } from "@/firebaseServices/CommunityFirebase/CreatedCommunityFirebaseHooks/CreateReservedCommunityNames";
 
 interface CommunityNameProps {
   CommunityNameChange: (data: string) => void;

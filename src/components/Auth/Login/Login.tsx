@@ -1,94 +1,70 @@
 "use client";
 
 import { useRecoilState } from "recoil";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { authOnClickState } from "@/atoms/authOnClickAtom";
-import RedditInput from "@/components/ui/customUI/InputField";
 import { useLoginService } from "@/firebaseServices/authService";
 import ResetOrNewUser from "@/components/Auth/Login/ResetOrNewUser";
+import RedditEmailPasswordInput from "@/components/ui/customUI/RedditEmailPasswordInput";
+import { FIREBASE_ERRORS } from "@/firebase/errors";
+
+const EMAIL_OR_USERNAME_ID = "EmailOrUsername";
+const PASSWORD_ID = "password";
+
+type InputField = {
+  label: string;
+  type: string;
+  id: string;
+};
 
 type InputStateType = {
-  isFocused: boolean;
   value: string;
-  borderColor: string;
 };
 
 type InputState = {
   [key: string]: InputStateType;
 };
 
-const userLogin = [
-  { label: "Email or username", type: "text", id: "EmailOrUsername" },
-  { label: "Password", type: "password", id: "password" },
+const userLogin: InputField[] = [
+  { label: "Email or username", type: "text", id: EMAIL_OR_USERNAME_ID },
+  { label: "Password", type: "password", id: PASSWORD_ID },
 ];
-
 const Login: React.FC = () => {
+  // Recoil: Login Click State
   const [clickState, setClickState] = useRecoilState(authOnClickState);
+
+  // Error
+  const [LoginError, setLoginError] = useState<boolean>(false);
+
+  // Firebase Login Hook
   const { logIn, user, loading, error } = useLoginService();
 
-  // Default inputState
-  const defaultState: InputState = userLogin.reduce((acc, field) => {
-    acc[field.id] = {
-      isFocused: false,
-      value: "",
-      borderColor: "border-transparent",
-    };
+  // Default InputState
+  const defaultState: InputState = userLogin.reduce((acc, { id }) => {
+    acc[id] = { value: "" };
     return acc;
   }, {} as InputState);
 
   // Input State
   const [inputState, setInputState] = useState<InputState>(defaultState);
 
-  // Focus On
-  const handleClick = (id: string) => {
-    setInputState((prev) => ({
-      ...prev,
-      [id]: { ...prev[id], isFocused: true, borderColor: "border-blue-500" },
-    }));
-  };
-
-  //Focus Off
-  const handleBlur = (id: string) => {
-    setInputState((prev) => ({
-      ...prev,
-      [id]: {
-        ...prev[id],
-        isFocused: false,
-        borderColor: "border-transparent",
-      },
-    }));
-  };
-
   // OnInputChange
-  const handleChange = (id: string, value: string) => {
+  const handleChange = useCallback((id: string, value: string) => {
     setInputState((prev) => ({
       ...prev,
       [id]: { ...prev[id], value },
     }));
-
-    console.log(id, ":", value);
-  };
-
-  // Reset state to the defaultState on component mount
-  useEffect(() => {
-    setInputState(defaultState);
   }, []);
 
-  useEffect(() => {
-    if (inputState.EmailOrUsername.value && inputState.password.value) {
-      setClickState({ disable: false });
-    }
-  }, [inputState]);
-
-  // onSubmit
-  const handleSubmit = async () => {
+  // Handle Submit
+  const handleSubmit = () => {
     logIn({
-      email: inputState.EmailOrUsername.value,
-      password: inputState.password.value,
+      email: inputState[EMAIL_OR_USERNAME_ID].value,
+      password: inputState[PASSWORD_ID].value,
     });
   };
 
-  // onSubmit
+  //! Runs Handle Submit
   useEffect(() => {
     if (clickState.clickedOn === "login") {
       setClickState({ clickedOn: undefined, disable: true });
@@ -96,38 +72,67 @@ const Login: React.FC = () => {
     }
   }, [clickState]);
 
+  //! Set Error True
+  useEffect(() => {
+    if (error?.message != "") {
+      setLoginError(true);
+    }
+  }, [error?.message]);
+
+  //! Set Error False
+  useEffect(() => {
+    setLoginError(false);
+  }, [inputState[EMAIL_OR_USERNAME_ID].value, inputState[PASSWORD_ID].value]);
+
+  //! Sets Login Button visiable if both inputs are not empty
+  useEffect(() => {
+    if (
+      inputState[EMAIL_OR_USERNAME_ID].value &&
+      inputState[PASSWORD_ID].value
+    ) {
+      setClickState({ disable: false });
+    }
+  }, [inputState]);
+
+  //! Reset state to defaultState on component mount
+  useEffect(() => {
+    setInputState(defaultState);
+    // Login Button state
+    setClickState({ clickedOn: undefined, disable: true });
+  }, []);
+
+  //TODO: Use Form
+  //TODO: Zod
   return (
     <>
-      <div className="grid gap-4">
-        {userLogin.map((user) => (
-          <div
-            key={user.id}
-            className={`relative h-[2.9rem] w-72 rounded-2xl border-2 bg-gray-200 transition-all duration-300 hover:bg-gray-300 ${inputState[user.id].borderColor}`}
-          >
-            <span
-              className={`pointer-events-none absolute border-transparent transition-all duration-300 ${
-                inputState[user.id].isFocused || inputState[user.id].value
-                  ? "left-3 top-2 text-[11px]"
-                  : "left-3 top-1/2 -translate-y-1/2 text-xs"
-              }`}
-            >
-              <span className="text-gray-600">{user.label}</span>
-              <span className="ml-1 text-red-500">*</span>
-            </span>
-            <RedditInput
-              id={user.id}
-              required
-              type={user.type}
-              onFocus={() => handleClick(user.id)}
-              onBlur={() => handleBlur(user.id)}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                handleChange(user.id, e.target.value)
-              }
-              value={inputState[user.id].value}
-            />
-          </div>
-        ))}
-      </div>
+      {/* Email or UserName */}
+      <RedditEmailPasswordInput
+        type="text"
+        id={EMAIL_OR_USERNAME_ID}
+        onChange={(e) => handleChange(EMAIL_OR_USERNAME_ID, e.target.value)}
+        value={inputState[EMAIL_OR_USERNAME_ID].value}
+        //Reddit Email password Input props values
+        PlaceHolder="Email or username"
+        setErrorByUser={LoginError}
+      />
+
+      {/* Password */}
+      <RedditEmailPasswordInput
+        className="mt-4"
+        type="password"
+        id={PASSWORD_ID}
+        onChange={(e) => handleChange(PASSWORD_ID, e.target.value)}
+        value={inputState[PASSWORD_ID].value}
+        //Reddit Email password Input props values
+        PlaceHolder="Password"
+        setErrorByUser={LoginError}
+      />
+
+      <span className={`ml-3 mt-[2px] h-[15px] w-fit text-[13px] text-red-600`}>
+        {LoginError &&
+          FIREBASE_ERRORS[error?.message as keyof typeof FIREBASE_ERRORS]}
+        {/* {error?.message} */}
+      </span>
 
       {/* ResetPassword and NewUser Sign Up Button */}
       <ResetOrNewUser />

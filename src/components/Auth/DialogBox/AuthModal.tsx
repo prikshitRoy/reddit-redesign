@@ -70,7 +70,7 @@ const AuthModal: React.FC = () => {
           </DialogTitle>
         </DialogHeader>
         {/* Login, Sign Up or ResetPassword */}
-        <div className="grid justify-center">
+        <div className="grid h-[30rem] justify-center">
           <div className="mt-2 w-64 text-xl font-bold">
             {modalState.view === "login" && "Log In"}
             {modalState.view === "signup" && "Sign Up"}

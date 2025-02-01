@@ -10,16 +10,16 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import { auth, db } from "@/firebase/clientApp";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { db } from "@/firebase/clientApp";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { createCommunity, validCommunityName } from "@/atoms/communitiesAtom";
 import { useDeleteReservedCommunityNames } from "./DeleteReservedCommunityNames";
+import { redditUser } from "@/atoms/authModalAtom";
 
 export function useCreateReserveCommunityName() {
   const communityData = useRecoilValue(createCommunity);
   const [duplicate, setDuplicate] = useRecoilState(validCommunityName);
-  const [user] = useAuthState(auth);
+  const userState = useRecoilValue(redditUser);
 
   //Deletes users all reserved CommunityName if user has more than 5 reserved community names
   //Leaves reserveCommunityName === communityData.id
@@ -46,7 +46,7 @@ export function useCreateReserveCommunityName() {
       // If name exist check if its created by the same user
       const q = query(
         collection(db, "reserveCommunityName"),
-        where("creatorId", "==", user?.uid),
+        where("creatorId", "==", userState.userUid),
       );
 
       const querySnapshot = await getDocs(q);
@@ -65,7 +65,7 @@ export function useCreateReserveCommunityName() {
       // Creating a new document with the community name
       try {
         await setDoc(reserveCommunityNameDocRef, {
-          creatorId: user?.uid,
+          creatorId: userState,
           createdAt: serverTimestamp(),
         });
         console.log("Document successfully written!");

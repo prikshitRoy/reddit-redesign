@@ -75,6 +75,14 @@ const Communities: React.FC = () => {
       }));
     }
 
+    if (CommunityView.view === "StyleYourCommunity") {
+      setCommunityView((prev) => ({
+        ...prev,
+        view: viewValues[index + 1],
+      }));
+      setCommunityView((prev) => ({ ...prev, disable: false }));
+    }
+
     if (
       CommunityView.view === "CommunityTopics" &&
       CommunityData.communityTopics.length > 0
@@ -83,14 +91,6 @@ const Communities: React.FC = () => {
         ...prev,
         view: viewValues[index + 1],
       }));
-    }
-
-    if (CommunityView.view === "StyleYourCommunity") {
-      setCommunityView((prev) => ({
-        ...prev,
-        view: viewValues[index + 1],
-      }));
-      CommunityView.disable = false;
     }
   };
 

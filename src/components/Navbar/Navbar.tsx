@@ -6,14 +6,28 @@ import Searchinput from "./Searchinput";
 import RightContent from "./RightContent/RightContent";
 import { auth } from "@/firebase/clientApp";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useRecoilState, useResetRecoilState } from "recoil";
+import { redditUser } from "@/atoms/authModalAtom";
+import { useEffect } from "react";
 
 const Navbar: React.FC = () => {
   const [user, loading, error] = useAuthState(auth); // User
+  const [userState, setUserState] = useRecoilState(redditUser);
+  const resetUserState = useResetRecoilState(redditUser);
 
   const router = useRouter();
   const Home = () => {
     router.push("/"); // Navigates to the home page
   };
+
+  useEffect(() => {
+    if (user) {
+      setUserState({ user: true, userUid: user.uid });
+    }
+    if (!user) {
+      resetUserState();
+    }
+  }, [user]);
 
   return (
     <div className="sticky top-0 flex h-[54px] justify-between border border-b-2 pl-[12px] pr-[12px]">

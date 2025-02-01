@@ -4,20 +4,19 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDoc,
   getDocs,
   orderBy,
   query,
   where,
 } from "firebase/firestore";
-import { auth, db } from "@/firebase/clientApp";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { db } from "@/firebase/clientApp";
 import { useRecoilValue } from "recoil";
 import { createCommunity } from "@/atoms/communitiesAtom";
+import { redditUser } from "@/atoms/authModalAtom";
 
 //! Delete Reserve Community Names
 export function useDeleteReservedCommunityNames() {
-  const [user] = useAuthState(auth);
+  const userState = useRecoilValue(redditUser);
   const communityData = useRecoilValue(createCommunity);
   const newCommunityName = communityData.id.toLowerCase();
 
@@ -33,7 +32,7 @@ export function useDeleteReservedCommunityNames() {
 
       const q = query(
         collection(db, "reserveCommunityName"),
-        where("creatorId", "!=", user?.uid),
+        where("creatorId", "!=", userState.userUid),
         where("createdAt", "<", deleteThirtyMinName),
       );
 
@@ -64,7 +63,7 @@ export function useDeleteReservedCommunityNames() {
       // Create a query to fetch reserveCommunityName documents for the current user
       const q = query(
         collection(db, "reserveCommunityName"),
-        where("creatorId", "==", user?.uid),
+        where("creatorId", "==", userState.userUid),
         orderBy("createdAt", "desc"),
       );
 
@@ -102,14 +101,11 @@ export function useDeleteReservedCommunityNames() {
   //! Runs when user close Create Create Community DialogBox
   //TODO: Runs when user refreshes the page
   const deleteAllReservedCommunityNamesOfUser = async () => {
-    // Get the current authenticated user state
-    const [user] = useAuthState(auth);
-
     try {
       // Create a query to find all reserved community names created by the current user
       const q = query(
         collection(db, "reserveCommunityName"),
-        where("creatorId", "==", user?.uid), // Filter by user ID
+        where("creatorId", "==", userState.userUid), // Filter by user ID
       );
 
       // Fetch matching documents

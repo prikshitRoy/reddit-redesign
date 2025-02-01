@@ -8,27 +8,18 @@ import ResetOrNewUser from "@/components/Auth/Login/ResetOrNewUser";
 import RedditEmailPasswordInput from "@/components/ui/customUI/RedditEmailPasswordInput";
 import { FIREBASE_ERRORS } from "@/firebase/errors";
 
+type InputState = {
+  [key: string]: { value: string };
+};
+
 const EMAIL_OR_USERNAME_ID = "EmailOrUsername";
 const PASSWORD_ID = "password";
 
-type InputField = {
-  label: string;
-  type: string;
-  id: string;
-};
-
-type InputStateType = {
-  value: string;
-};
-
-type InputState = {
-  [key: string]: InputStateType;
-};
-
-const userLogin: InputField[] = [
+const userLogin: { label: string; type: string; id: string }[] = [
   { label: "Email or username", type: "text", id: EMAIL_OR_USERNAME_ID },
   { label: "Password", type: "password", id: PASSWORD_ID },
 ];
+
 const Login: React.FC = () => {
   // Recoil: Login Click State
   const [clickState, setClickState] = useRecoilState(authOnClickState);
@@ -56,7 +47,7 @@ const Login: React.FC = () => {
     }));
   }, []);
 
-  // Handle Submit
+  //! Handle Submit
   const handleSubmit = () => {
     logIn({
       email: inputState[EMAIL_OR_USERNAME_ID].value,
@@ -64,7 +55,7 @@ const Login: React.FC = () => {
     });
   };
 
-  //! Runs Handle Submit
+  //! Runs: Handle Submit
   useEffect(() => {
     if (clickState.clickedOn === "login") {
       setClickState({ clickedOn: undefined, disable: true });
@@ -74,6 +65,7 @@ const Login: React.FC = () => {
 
   //! Set Error True
   useEffect(() => {
+    if (loading) return;
     if (error?.message != "") {
       setLoginError(true);
     }
@@ -84,7 +76,7 @@ const Login: React.FC = () => {
     setLoginError(false);
   }, [inputState[EMAIL_OR_USERNAME_ID].value, inputState[PASSWORD_ID].value]);
 
-  //! Sets Login Button visiable if both inputs are not empty
+  //! Sets Login Button visiable if both inputs are have value
   useEffect(() => {
     if (
       inputState[EMAIL_OR_USERNAME_ID].value &&
@@ -110,7 +102,6 @@ const Login: React.FC = () => {
         type="text"
         id={EMAIL_OR_USERNAME_ID}
         onChange={(e) => handleChange(EMAIL_OR_USERNAME_ID, e.target.value)}
-        value={inputState[EMAIL_OR_USERNAME_ID].value}
         //Reddit Email password Input props values
         PlaceHolder="Email or username"
         setErrorByUser={LoginError}
@@ -122,7 +113,6 @@ const Login: React.FC = () => {
         type="password"
         id={PASSWORD_ID}
         onChange={(e) => handleChange(PASSWORD_ID, e.target.value)}
-        value={inputState[PASSWORD_ID].value}
         //Reddit Email password Input props values
         PlaceHolder="Password"
         setErrorByUser={LoginError}

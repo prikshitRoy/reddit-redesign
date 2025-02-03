@@ -9,6 +9,8 @@ import SearchBar from "@/components/ui/customUI/SearchBar";
 import TopicsData from "./RedditRefineTopics.json";
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import { useRecoilState } from "recoil";
+import { createCommunity } from "@/atoms/communitiesAtom";
 
 const CommunityTopics: React.FC = () => {
   const [topicSearch, setTopicSearch] = useState<string>("");
@@ -18,6 +20,7 @@ const CommunityTopics: React.FC = () => {
   const [onBlur, setOnBlur] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [mature, setMature] = useRecoilState(createCommunity);
 
   // Search
   const filteredData = Object.entries(TopicsData)
@@ -39,6 +42,16 @@ const CommunityTopics: React.FC = () => {
             )
           : subtopics,
     }));
+
+  // Mature Content
+  useEffect(() => {
+    if (mature.mature) {
+      setError(true);
+    }
+    if (!mature.mature) {
+      setError(false);
+    }
+  }, [mature.mature]);
 
   // OnFocus
   const HandleFocus = () => {

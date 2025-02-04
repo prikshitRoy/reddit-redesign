@@ -20,9 +20,13 @@ const CommunityTopics: React.FC = () => {
   const [onBlur, setOnBlur] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [mature, setMature] = useRecoilState(createCommunity);
+  const [communityData, setCommunityData] = useRecoilState(createCommunity);
 
-  // Search
+  const topicsCategories: { [key: string]: string[] } = TopicsData;
+
+  //TODO:
+
+  //! Search
   const filteredData = Object.entries(TopicsData)
     .filter(([category, subtopics]) => {
       if (topicSearch === "") {
@@ -43,15 +47,36 @@ const CommunityTopics: React.FC = () => {
           : subtopics,
     }));
 
-  // Mature Content
-  useEffect(() => {
-    if (mature.mature) {
-      setError(true);
+  //! Handle Mature Content Type Category
+  //! Setting CommunityCategory and Topics
+  function handleMature(topics: string[]) {
+    const categoriesFound = new Set(
+      topics
+        .map(
+          (subtopic) =>
+            Object.entries(topicsCategories).find(([_, subs]) =>
+              subs.includes(subtopic),
+            )?.[0],
+        )
+        .filter(Boolean),
+    );
+
+    const hasAdultContentOrMatureTopics =
+      categoriesFound.has("🟥Adult Content") ||
+      categoriesFound.has("🔞Mature Topics");
+
+    //Mature
+    setCommunityData((prev) => ({
+      ...prev,
+      communityTopics: topics,
+      mature: hasAdultContentOrMatureTopics,
+    }));
+
+    {
+      hasAdultContentOrMatureTopics && setErrorMessage("Adult content");
+      setError(hasAdultContentOrMatureTopics);
     }
-    if (!mature.mature) {
-      setError(false);
-    }
-  }, [mature.mature]);
+  }
 
   // OnFocus
   const HandleFocus = () => {
@@ -66,6 +91,13 @@ const CommunityTopics: React.FC = () => {
     if (topics.length === 3) {
     }
   };
+
+  // Set Mature Content Type
+  useEffect(() => {
+    if (topics) {
+      handleMature(topics);
+    }
+  }, [topics]);
 
   // If the topic is already included, it removes the topic from the list.
   // If the topic is not included, it adds the topic to the list.

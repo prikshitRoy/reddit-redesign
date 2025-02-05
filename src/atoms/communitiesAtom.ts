@@ -9,6 +9,7 @@ export type Mature = boolean;
 export interface Community {
   id: string;
   description: string;
+  communityCategories: string[];
   communityTopics: string[];
   creatorId: string;
   numberofMembers: number;
@@ -22,6 +23,7 @@ export interface Community {
 export const defaultCommunity: Community = {
   id: "",
   description: "",
+  communityCategories: [],
   communityTopics: [],
   creatorId: "",
   numberofMembers: 1,

@@ -22,9 +22,10 @@ const CommunityTopics: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [communityData, setCommunityData] = useRecoilState(createCommunity);
 
-  const topicsCategories: { [key: string]: string[] } = TopicsData;
+  const redditCommunityTopics: { [key: string]: string[] } = TopicsData;
 
-  //TODO:
+  //TODO:Add handleMature , filteredData together if posible
+  //TODO: Make filteredData more Simple
 
   //! Search
   const filteredData = Object.entries(TopicsData)
@@ -50,32 +51,42 @@ const CommunityTopics: React.FC = () => {
   //! Handle Mature Content Type Category
   //! Setting CommunityCategory and Topics
   function handleMature(topics: string[]) {
-    const categoriesFound = new Set(
-      topics
-        .map(
-          (subtopic) =>
-            Object.entries(topicsCategories).find(([_, subs]) =>
-              subs.includes(subtopic),
-            )?.[0],
-        )
-        .filter(Boolean),
+    const categories = Array.from(
+      new Set(
+        topics
+          .map(
+            (subtopic) =>
+              Object.entries(redditCommunityTopics).find(([_, subs]) =>
+                subs.includes(subtopic),
+              )?.[0],
+          )
+          .filter((item): item is string => typeof item === "string"),
+      ),
     );
 
     const hasAdultContentOrMatureTopics =
-      categoriesFound.has("🟥Adult Content") ||
-      categoriesFound.has("🔞Mature Topics");
+      categories.includes("🟥Adult Content") ||
+      categories.includes("🔞Mature Topics");
 
-    //Mature
+    // Warnning
+    {
+      hasAdultContentOrMatureTopics &&
+        setErrorMessage(
+          "Selecting Mature topics labels your community as 18+ and limits discovery",
+        );
+      setError(hasAdultContentOrMatureTopics);
+    }
+
+    //Set Community Category and Topics
     setCommunityData((prev) => ({
       ...prev,
+      communityCategories: categories,
       communityTopics: topics,
       mature: hasAdultContentOrMatureTopics,
     }));
 
-    {
-      hasAdultContentOrMatureTopics && setErrorMessage("Adult content");
-      setError(hasAdultContentOrMatureTopics);
-    }
+    //console.log("communityTopics", topics);
+    //console.log("communityCategories", categories);
   }
 
   // OnFocus

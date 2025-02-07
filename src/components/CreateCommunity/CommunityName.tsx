@@ -42,6 +42,9 @@ const CommunityName: React.FC<CommunityNameProps> = ({
 
   // Handle Change: Community-Name Input Box Change Event
   const handleChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // When Name changes set next button disable
+    setValid({ nameExist: undefined });
+
     if (event.target.value.length > 21) return;
 
     CommunityNameChange(event.target.value);
@@ -114,14 +117,7 @@ const CommunityName: React.FC<CommunityNameProps> = ({
     }
   };
 
-  useEffect(() => {
-    if (Community.id) {
-      setCommunityName(Community.id);
-      CommunityNameChange(Community.id);
-    }
-    setValid({ nameExist: undefined });
-  }, [communityName]);
-
+  //! Community Name valid or not state
   useEffect(() => {
     if (valid.nameExist === undefined || false) {
       RemoveError();
@@ -136,6 +132,11 @@ const CommunityName: React.FC<CommunityNameProps> = ({
     setCommunityName("");
     setCharsRemaining(21);
     RemoveError();
+
+    // When user click back it sets community Name
+    if (Community.id) {
+      setCommunityName(Community.id);
+    }
   }, []);
 
   return (

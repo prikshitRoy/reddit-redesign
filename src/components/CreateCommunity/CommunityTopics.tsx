@@ -138,6 +138,12 @@ const CommunityTopics: React.FC = () => {
     setTopics([]);
   }, []);
 
+  useEffect(() => {
+    if (communityData.communityCategories && communityData.communityTopics) {
+      setTopics(communityData.communityTopics);
+    }
+  }, []);
+
   return (
     <>
       <DialogHeader>

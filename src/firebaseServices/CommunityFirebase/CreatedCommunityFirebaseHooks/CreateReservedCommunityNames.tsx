@@ -1,15 +1,6 @@
 "use client";
 
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  serverTimestamp,
-  setDoc,
-  where,
-} from "firebase/firestore";
+import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
 import { db } from "@/firebase/clientApp";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { createCommunity, validCommunityName } from "@/atoms/communitiesAtom";
@@ -17,8 +8,11 @@ import { useDeleteReservedCommunityNames } from "./DeleteReservedCommunityNames"
 import { redditUser } from "@/atoms/authModalAtom";
 
 export function useCreateReserveCommunityName() {
+  //Recoil: Community Data
   const communityData = useRecoilValue(createCommunity);
-  const [duplicate, setDuplicate] = useRecoilState(validCommunityName);
+  // Recoil: Valid Community Name Status
+  const [valid, setValid] = useRecoilState(validCommunityName);
+  // Recoil: User Data
   const userState = useRecoilValue(redditUser);
 
   //Deletes users all reserved CommunityName if user has more than 5 reserved community names
@@ -29,52 +23,58 @@ export function useCreateReserveCommunityName() {
     //TODO: convert it to Transaction
     const newCommunityName = communityData.id.toLowerCase();
     const communityDocRef = doc(db, "communities", newCommunityName);
-    const communityDoc = await getDoc(communityDocRef);
-
     const reserveCommunityNameDocRef = doc(
       db,
       "reserveCommunityName",
       newCommunityName,
     );
-    const reserveDoc = await getDoc(reserveCommunityNameDocRef);
 
+    // Get both documents in parallel for better performance
+    const [communityDoc, reserveDoc] = await Promise.all([
+      getDoc(communityDocRef),
+      getDoc(reserveCommunityNameDocRef),
+    ]);
+
+    // First check if community already exists
     if (communityDoc.exists()) {
       // Duplicate community name exists
-      setDuplicate({ nameExist: true });
+      setValid({ nameExist: true });
       return true;
-    } else if (reserveDoc.exists()) {
-      // If name exist check if its created by the same user
-      const q = query(
-        collection(db, "reserveCommunityName"),
-        where("creatorId", "==", userState.userUid),
-      );
+    }
 
-      const querySnapshot = await getDocs(q);
+    // Then check reserved names
+    if (reserveDoc.exists()) {
+      // Get the creator ID from the reserve doc
+      const reserveData = reserveDoc.data();
 
-      if (querySnapshot) {
+      // Check if the name is reserved by the current user
+      if (reserveData.creatorId === userState.userUid) {
         // created by same user
-        setDuplicate({ nameExist: false });
+        setValid({ nameExist: false });
         return false;
       } else {
-        // Duplicate name exist created by different user
-        setDuplicate({ nameExist: true });
+        // Name is reserved by different user
+        setValid({ nameExist: true });
         return true;
       }
     } else {
-      // Community Name does not exist in reserveCommunityName Collection
-      // Creating a new document with the community name
+      // If name is not taken or reserved, create new reservation
       try {
         await setDoc(reserveCommunityNameDocRef, {
-          creatorId: userState,
+          name: communityData.id,
+          creatorId: userState.userUid,
           createdAt: serverTimestamp(),
         });
         console.log("Document successfully written!");
+        // Check if user have more then 5 communityReserved
+        resetUserReservedCommunityName();
+        setValid({ nameExist: false });
+        return false;
       } catch (e) {
         console.error("Error adding document: ", e);
+        setValid({ nameExist: true });
+        return true;
       }
-
-      // Check if user have more then 5 communityReserved
-      resetUserReservedCommunityName();
     }
   };
 

@@ -92,11 +92,11 @@ export const viewValues: CreateCommunityViewState["view"][] = [
 
 /* Community Name Validation State */
 interface ValidCommunityName {
-  nameExist: boolean;
+  nameExist: boolean | undefined;
 }
 
 const defaultValidCommunityName: ValidCommunityName = {
-  nameExist: false,
+  nameExist: undefined,
 };
 
 export const validCommunityName = atom<ValidCommunityName>({

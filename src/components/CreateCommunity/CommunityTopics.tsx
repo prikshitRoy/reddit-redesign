@@ -82,7 +82,7 @@ const CommunityTopics: React.FC = () => {
       ...prev,
       communityCategories: categories,
       communityTopics: topics,
-      mature: hasAdultContentOrMatureTopics,
+      matureTopics: hasAdultContentOrMatureTopics,
     }));
 
     //console.log("communityTopics", topics);

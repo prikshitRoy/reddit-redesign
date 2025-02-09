@@ -15,6 +15,7 @@ export interface Community {
   numberofMembers: number;
   privacyType: communityPrivacyType;
   mature: Mature;
+  matureTopics: boolean;
   createdAt?: Timestamp;
   imageURL?: string;
 }
@@ -29,6 +30,7 @@ export const defaultCommunity: Community = {
   numberofMembers: 1,
   privacyType: "public",
   mature: false,
+  matureTopics: false,
 };
 
 export const createCommunity = atom<Community>({

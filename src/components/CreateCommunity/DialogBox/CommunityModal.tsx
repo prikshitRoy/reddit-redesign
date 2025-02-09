@@ -193,7 +193,7 @@ const Communities: React.FC = () => {
                 className={`rounded-full p-2 text-xs font-semibold ${
                   CommunityView.disable
                     ? "bg-gray-100 text-gray-400"
-                    : "bg-blue-500"
+                    : "bg-blue-800 text-white hover:bg-blue-900"
                 }`}
                 onClick={
                   viewValues.indexOf(CommunityView.view) <= 2

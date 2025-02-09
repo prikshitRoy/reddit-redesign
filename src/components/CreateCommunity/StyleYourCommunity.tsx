@@ -13,6 +13,8 @@ import { Community, createCommunity } from "@/atoms/communitiesAtom";
 const StyleYourCommunity: React.FC = () => {
   const Community = useRecoilValue(createCommunity);
 
+  //TODO: Community Banner and Icon support
+
   return (
     <>
       <DialogHeader>

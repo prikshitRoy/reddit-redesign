@@ -40,12 +40,15 @@ const Login: React.FC = () => {
   const [inputState, setInputState] = useState<InputState>(defaultState);
 
   // OnInputChange
-  const handleChange = useCallback((id: string, value: string) => {
-    setInputState((prev) => ({
-      ...prev,
-      [id]: { ...prev[id], value },
-    }));
-  }, []);
+  const handleChange = useCallback(
+    (id: string, value: string) => {
+      setInputState((prev) => ({
+        ...prev,
+        [id]: { ...prev[id], value },
+      }));
+    },
+    [setInputState],
+  );
 
   //! Handle Submit
   const handleSubmit = () => {

@@ -133,7 +133,13 @@ const Communities: React.FC = () => {
     CommunityData.communityCategories,
   ]);
 
-  const handleCreateCommunity = () => {};
+  const handleCreateCommunity = () => {
+    CreateCommunity({
+      communityName: CommunityData.id,
+      CommunityType: CommunityData.privacyType,
+    });
+    console.log("Create Community");
+  };
 
   return (
     <>

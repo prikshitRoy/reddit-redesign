@@ -4,10 +4,11 @@ import { useState } from "react";
 import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "@/firebase/clientApp";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { communityPrivacyType } from "@/atoms/communitiesAtom";
 
 interface CommunityCredentials {
   communityName: string;
-  CommunityType: string;
+  CommunityType: communityPrivacyType;
 }
 
 //! Creates New Community
@@ -27,7 +28,6 @@ export function Community() {
       const communityNameLC = communityName.toLowerCase();
       const communityDocRef = doc(db, "communities", communityNameLC);
 
-      // TODO: Delete reserveCommunityName after community is created
       await runTransaction(db, async (transaction) => {
         // Create Cummonity
         transaction.set(communityDocRef, {
@@ -38,7 +38,7 @@ export function Community() {
           privacyType: CommunityType,
         });
 
-        // Create Community Snippet on User
+        // Creates Community Snippet on User
         // Collection --> Document --> Collection --> Document --> ....
         transaction.set(
           doc(db, `users/${user?.uid}/communitySnippets`, communityNameLC),

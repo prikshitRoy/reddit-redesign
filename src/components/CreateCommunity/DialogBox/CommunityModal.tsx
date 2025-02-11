@@ -5,6 +5,7 @@ import {
   DialogContent,
 } from "@/components/ui/customUI/Communitydialog";
 import React, { useEffect } from "react";
+import { Loader2 } from "lucide-react";
 
 import CommunityNameDescription from "../CommunityNameDescription";
 import { useRecoilState } from "recoil";
@@ -22,10 +23,11 @@ import { viewValues } from "@/atoms/communitiesAtom";
 import { Community } from "@/firebaseServices/CommunityFirebase/CreatedCommunityFirebaseHooks/CreateCommunity";
 import { useDeleteReservedCommunityNames } from "@/firebaseServices/CommunityFirebase/CreatedCommunityFirebaseHooks/DeleteReservedCommunityNames";
 
+//TODO: Error handaling
+
 const Communities: React.FC = () => {
   // Firebase Hook to create Community
-  const { CreateCommunity, communityStatus, errorInCreatingCommunity } =
-    Community();
+  const { CreateCommunity, errorMessage, isLoading } = Community();
 
   //Firebase: Delete all reserved community names of user
   const { deleteAllReservedCommunityNamesOfUser } =
@@ -133,12 +135,38 @@ const Communities: React.FC = () => {
     CommunityData.communityCategories,
   ]);
 
-  const handleCreateCommunity = () => {
-    CreateCommunity({
-      communityName: CommunityData.id,
-      CommunityType: CommunityData.privacyType,
-    });
-    console.log("Create Community");
+  //! Create Community
+  const handleCreateCommunity = async () => {
+    try {
+      const result = await CreateCommunity({
+        name: CommunityData.id,
+        description: CommunityData.description,
+        iconURL: CommunityData.iconURL,
+        bannerURL: CommunityData.bannerURL,
+        communityCategories: CommunityData.communityCategories,
+        communityTopics: CommunityData.communityTopics,
+        privacyType: CommunityData.privacyType,
+        mature: CommunityData.mature,
+        matureTopics: CommunityData.matureTopics,
+      });
+
+      if (result.success) {
+        //TODO: Handle success
+        //toast.success('Community created successfully!');
+        //TODO: Optionally redirect to the new community
+        //router.push(`/r/${CommunityData.id}`);
+
+        handleClose();
+      } else {
+        // Handle failure
+        //toast.error(result.error || 'Failed to create community');
+      }
+    } catch (error) {
+      console.error("Error creating community:", error);
+      //toast.error('An unexpected error occurred');
+    } finally {
+      //setIsSubmitting(false);
+    }
   };
 
   return (
@@ -206,11 +234,15 @@ const Communities: React.FC = () => {
                     ? HandleNext
                     : handleCreateCommunity
                 }
-                disabled={CommunityView.disable}
+                disabled={CommunityView.disable || isLoading}
               >
-                {viewValues.indexOf(CommunityView.view) <= 2
-                  ? "Next"
-                  : "Create Community"}
+                {viewValues.indexOf(CommunityView.view) <= 2 ? (
+                  "Next"
+                ) : isLoading ? (
+                  <Loader2 className="h-4 w-[120px] animate-spin" />
+                ) : (
+                  "Create Community"
+                )}
               </button>
             </div>
           </DialogFooter>

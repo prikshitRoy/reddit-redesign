@@ -17,7 +17,8 @@ export interface Community {
   mature: Mature;
   matureTopics: boolean;
   createdAt?: Timestamp;
-  imageURL?: string;
+  bannerURL?: string;
+  iconURL?: string;
 }
 
 // Default Community Value

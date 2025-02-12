@@ -7,7 +7,7 @@ const PageContent: React.FC<PageContentProps> = ({ children }) => {
     <main className="flex justify-center">
       <div className="flex w-full justify-center">
         {/* Left Hand Side */}
-        <section className="flex w-[16.5rem] flex-col border-r">
+        <section className="flex w-[16.3rem] flex-col border-r">
           {children && children[0 as keyof typeof children]}
         </section>
         {/* Right Hand Side */}

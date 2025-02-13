@@ -1,16 +1,19 @@
 "use client";
 
-import { createCommunityViewState } from "@/atoms/communitiesAtom";
+import {
+  CommunityState,
+  createCommunityViewState,
+} from "@/atoms/communitiesAtom";
 import Communities from "@/components/CreateCommunity/DialogBox/CommunityModal";
 import { auth } from "@/firebase/clientApp";
 import { useDeleteReservedCommunityNames } from "@/firebaseServices/CommunityFirebase/CreatedCommunityFirebaseHooks/DeleteReservedCommunityNames";
 import { cn } from "@/lib/utils";
-import { LucidePlus } from "lucide-react";
+import { LucidePlus, Star } from "lucide-react";
 import Image from "next/image";
 import { ReactNode } from "react";
 
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 interface ButtonProps {
   alt?: string;
@@ -54,15 +57,14 @@ export function Button({
             />
           </div>
         )}
-        <div className="navText">{name}</div>
-        {star && src && (
-          <div className="navLogo">
-            <Image
-              alt={alt ? alt : ""}
-              height={h ? h : "20"}
-              width={w ? w : "20"}
-              src={`${src}`}
-            />
+        <div
+          className={`line-clamp-1 overflow-hidden text-left ${star ? "w-[6.1rem]" : "w-fit"}`}
+        >
+          {star ? `${"r/" + name}` : `${name}`}
+        </div>
+        {star && (
+          <div className="starButton">
+            <Star className="stroke-1 p-[0.15rem]" />
           </div>
         )}
       </div>
@@ -75,10 +77,11 @@ const NavigationMenu: React.FC = () => {
   const setcreateCommunityViewState = useSetRecoilState(
     createCommunityViewState,
   );
+  const mySnippets = useRecoilValue(CommunityState).mySnippets;
 
   const { deleteReservedNames } = useDeleteReservedCommunityNames();
 
-  // Create Community Function
+  //! Create Community Function
   const HandleCreateCommunityButton = () => {
     setcreateCommunityViewState({
       open: true,
@@ -106,7 +109,7 @@ const NavigationMenu: React.FC = () => {
               <Button
                 name="Create a community"
                 logo={true}
-                onClick={HandleCreateCommunityButton}
+                onClick={() => HandleCreateCommunityButton()}
               >
                 <LucidePlus className="navLogo" />
               </Button>
@@ -114,6 +117,11 @@ const NavigationMenu: React.FC = () => {
             </>
           )}
         </div>
+        {mySnippets
+          .filter((snippet) => snippet.isModerator)
+          .map((snippet) => (
+            <div key={snippet.communityId}></div>
+          ))}
       </div>
       {/* 
           Home

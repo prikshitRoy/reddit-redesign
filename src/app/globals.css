@@ -79,7 +79,7 @@ body {
 
 @layer components {
   .navMenuItem {
-    @apply flex h-8 w-[11.5rem] items-center gap-[0.4rem] rounded-md px-[0.80rem] text-left hover:cursor-pointer hover:bg-slate-100;
+    @apply flex h-8 w-[11.6rem] items-center gap-[0.4rem] rounded-md px-[0.80rem] text-left hover:cursor-pointer hover:bg-slate-100;
   }
 
   .navLogo {
@@ -88,9 +88,5 @@ body {
 
   .starButton {
     @apply flex h-6 w-6 items-center justify-center rounded-full hover:bg-slate-200;
-  }
-
-  .navText {
-    @apply line-clamp-1 w-fit overflow-hidden text-left;
   }
 }

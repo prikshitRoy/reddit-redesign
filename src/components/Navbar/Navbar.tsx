@@ -21,13 +21,14 @@ const Navbar: React.FC = () => {
   };
 
   useEffect(() => {
-    if (user) {
+    if (!loading && user) {
+      console.log("User:", user);
       setUserState({ user: true, userUid: user.uid });
     }
-    if (!user) {
+    if (loading) {
       resetUserState();
     }
-  }, [user]);
+  }, [user, loading]);
 
   return (
     <div className="sticky top-0 flex h-[54px] justify-between border border-b-2 pl-[12px] pr-[12px]">

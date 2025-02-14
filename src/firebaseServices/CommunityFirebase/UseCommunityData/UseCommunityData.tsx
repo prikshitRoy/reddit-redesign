@@ -1,24 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getDocs, collection } from "firebase/firestore";
-import { auth, db } from "@/firebase/clientApp";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useRecoilState } from "recoil";
+import { db } from "@/firebase/clientApp";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { CommunitySnippets, CommunityState } from "@/atoms/communitiesAtom";
+import { redditUser } from "@/atoms/authModalAtom";
 
 export function UseCommunityData() {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [communityStateValue, setCommunityStateValue] =
     useRecoilState(CommunityState);
-  const [user] = useAuthState(auth);
+  const userState = useRecoilValue(redditUser);
 
   const getMySnippets = async () => {
     try {
       // get user Snippets
+      if (!userState.user) return;
+      setLoading(true);
       const snippetDocs = await getDocs(
-        collection(db, `users/${user?.uid}/communitySnippets`),
+        collection(db, `users/${userState.userUid}/communitySnippets`),
       );
 
       const snippets = snippetDocs.docs.map((doc) => ({ ...doc.data() }));
@@ -38,21 +40,7 @@ export function UseCommunityData() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    if (!user) {
-      setCommunityStateValue((prev) => ({
-        ...prev,
-        mySnippets: [],
-        snippetsFetched: false,
-      }));
-      return;
-    }
-    getMySnippets();
-  }, [user]);
-
-  /*     return {
-
-      errorMessage,
-      isLoading,
-    }; */
+  return {
+    getMySnippets,
+  };
 }

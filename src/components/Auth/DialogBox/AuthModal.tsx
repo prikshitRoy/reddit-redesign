@@ -1,24 +1,22 @@
 "use client";
 
-import { authModalState } from "@/atoms/authModalAtom";
+import { authModalState, redditUser } from "@/atoms/authModalAtom";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/customUI/dialog";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import OAuthButtons from "../OAuth/OAuthButtons";
 import { ArrowLeft } from "lucide-react";
 import AuthInputs from "./AuthInputs";
 import { useEffect } from "react";
 import AuthSubmitButton from "./AuthSubmitButton";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "@/firebase/clientApp";
 
 const AuthModal: React.FC = () => {
   const [modalState, setModalState] = useRecoilState(authModalState);
-  const [user, loading, error] = useAuthState(auth);
+  const userState = useRecoilValue(redditUser);
 
   const back = () => {
     setModalState((prev) => ({
@@ -35,9 +33,8 @@ const AuthModal: React.FC = () => {
   };
 
   useEffect(() => {
-    if (user) handleClose();
-    console.log("User:", user);
-  }, [user]);
+    if (userState.user) handleClose();
+  }, [userState.user]);
 
   const viewsWithBackButton = [
     "resetPassword",

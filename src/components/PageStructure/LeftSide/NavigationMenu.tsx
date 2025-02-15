@@ -13,83 +13,13 @@ import { ChevronUp, LucidePlus, Star } from "lucide-react";
 import Image from "next/image";
 import { ReactNode, useEffect, useState } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-
-interface ButtonProps {
-  alt?: string;
-  src?: string;
-  name: string;
-  onClick?: () => void;
-  image?: boolean;
-  star?: boolean;
-  logo?: boolean;
-  dropDown?: boolean;
-  className?: string;
-  children?: ReactNode;
-}
-
-const option = {
-  MODERATION: "MODERATION",
-  CUSTOM_FEEDS: "CUSTOM FEEDS",
-  RECENT: "RECENT",
-  COMMUNITIES: "COMMUNITIES",
-  RESOURCES: "RESOURCES",
-  TOPICS: "TOPICS",
-} as const;
-type TypeOption = (typeof option)[keyof typeof option];
-
-export function Button({
-  alt,
-  src,
-  name,
-  onClick,
-  image = false,
-  star = false,
-  logo = false,
-  dropDown = false,
-  className,
-  children,
-}: ButtonProps) {
-  return (
-    <>
-      {dropDown && (
-        <div className="my-2 h-0 w-[11.5rem] flex-grow border-t border-gray-300" />
-      )}
-
-      <div
-        className={cn(
-          `navMenuItem ${dropDown && "justify-between"}`,
-          className,
-        )}
-        onClick={onClick}
-      >
-        {logo && !dropDown && children}
-
-        {image && (
-          <div className="navLogo">
-            <Image
-              alt={alt ? alt : ""}
-              height={star ? "32" : "20"}
-              width={star ? "32" : "20"}
-              src={`${src ? src : "/reddit-community-logo.svg"}`}
-            />
-          </div>
-        )}
-        <div
-          className={`line-clamp-1 overflow-hidden text-left ${star ? `w-[6.1rem]` : `w-fit`} ${dropDown ? "text-[0.62rem] tracking-[0.099em] text-gray-500" : "text-[0.70rem]"}`}
-        >
-          {star ? `${"r/" + name}` : `${name}`}
-        </div>
-
-        {dropDown && logo && children}
-        {star && (
-          <div className="starButton" onClick={onClick}>
-            <Star className="stroke-1 p-[0.15rem]" />
-          </div>
-        )}
-      </div>
-    </>
-  );
-}
+import SideBarButtons, {
+  DropDownButtonTypes,
+  DropDownButtonOption,
+  Line,
+  Shrink,
+  Starlogo,
+} from "./SideBarButton";
 
 const NavigationMenu: React.FC = () => {
   const userState = useRecoilValue(redditUser);
@@ -102,23 +32,23 @@ const NavigationMenu: React.FC = () => {
   const { deleteReservedNames } = useDeleteReservedCommunityNames();
 
   const [dropdownStates, setDropdownStates] = useState<
-    Record<TypeOption, boolean>
+    Record<DropDownButtonTypes, boolean>
   >(() => {
-    const entries = Object.values(option).reduce(
+    const entries = Object.values(DropDownButtonOption).reduce(
       (acc, key) => {
         acc[key] = true;
         return acc;
       },
-      {} as Record<TypeOption, boolean>,
+      {} as Record<DropDownButtonTypes, boolean>,
     );
 
     return entries;
   });
 
-  const toggleDropdown = (option: TypeOption) => {
+  const toggleDropdown = (DropDownButtonOption: DropDownButtonTypes) => {
     setDropdownStates((prev) => ({
       ...prev,
-      [option]: !prev[option],
+      [DropDownButtonOption]: !prev[DropDownButtonOption],
     }));
   };
 
@@ -143,136 +73,45 @@ const NavigationMenu: React.FC = () => {
     <>
       <div className="flex flex-col items-center justify-center text-black">
         <div className="my-3 flex h-fit w-full flex-col px-3">
-          <Button name="Home" src="/home.svg" alt="" image={true} />
-          <Button name="Popular" src="/popular.svg" alt="" image={true} />
+          {/* <Button name="Home" src="/home.svg" alt="" image={true} /> */}
+          {/*  <Button name="Popular" src="/popular.svg" alt="" image={true} /> */}
+          <SideBarButtons name="Home" type="normal" src="/home.svg" />
 
-          {/* //TODO: make text translucent as hight decrease, Add transition , for rotate, hight, text */}
-
-          {/* MODERATION */}
+          {/*New MODERATION */}
           {userState.user && (
             <>
-              <Button
-                name={option.MODERATION}
-                dropDown={true}
-                logo={true}
+              <SideBarButtons
+                type="dropdown"
+                name="MODERATION"
+                id={DropDownButtonOption.MODERATION}
+                dropdownState={dropdownStates.MODERATION}
                 onClick={() => {
                   toggleDropdown("MODERATION");
                 }}
+              />
+              <Shrink
+                id={DropDownButtonOption.MODERATION}
+                dropdownState={dropdownStates.MODERATION}
               >
-                <ChevronUp
-                  className={`dropDownStyle right-0 ${!dropdownStates.MODERATION && "rotate-180"}`}
-                />
-              </Button>
-              <div className={dropdownStates.MODERATION ? "h-fit" : "h-0"}>
                 {mySnippets
                   .filter((snippet) => snippet.isModerator)
                   .map((snippet) => (
-                    <Button
-                      className={`${!dropdownStates.MODERATION && "-z-10 text-transparent hover:pointer-events-none hover:bg-white"}`}
-                      key={snippet.communityId}
+                    <SideBarButtons
+                      type="community"
+                      id={snippet.communityId}
                       name={snippet.communityId}
-                      image={dropdownStates.MODERATION}
-                      star={dropdownStates.MODERATION}
-                    />
+                      src=""
+                      dropdownState={dropdownStates.MODERATION}
+                    >
+                      <Starlogo
+                        id={snippet.communityId}
+                        dropdownState={dropdownStates.MODERATION}
+                      />
+                    </SideBarButtons>
                   ))}
-              </div>
+              </Shrink>
             </>
           )}
-
-          {/* CUSTOM FEEDS */}
-          {userState.user && (
-            <>
-              <Button
-                name={option.CUSTOM_FEEDS}
-                dropDown={true}
-                logo={true}
-                onClick={() => {
-                  toggleDropdown("CUSTOM FEEDS");
-                }}
-              >
-                <ChevronUp
-                  className={`dropDownStyle right-0 ${!dropdownStates["CUSTOM FEEDS"] && "rotate-180"}`}
-                />
-              </Button>
-            </>
-          )}
-
-          {/* RECENT */}
-          {userState.user && (
-            <>
-              <Button
-                name={option.RECENT}
-                dropDown={true}
-                logo={true}
-                onClick={() => {
-                  toggleDropdown("RECENT");
-                }}
-              >
-                <ChevronUp
-                  className={`dropDownStyle right-0 ${!dropdownStates.RECENT && "rotate-180"}`}
-                />
-              </Button>
-            </>
-          )}
-
-          {/* COMMUNITIES */}
-          {userState.user && (
-            <>
-              <Button
-                name={option.COMMUNITIES}
-                dropDown={true}
-                logo={true}
-                onClick={() => {
-                  toggleDropdown("COMMUNITIES");
-                }}
-              >
-                <ChevronUp
-                  className={`dropDownStyle right-0 ${!dropdownStates.COMMUNITIES && "rotate-180"}`}
-                />
-              </Button>
-
-              <Button
-                name="Create a community"
-                logo={true}
-                onClick={() => HandleCreateCommunityButton()}
-              >
-                <LucidePlus className="navLogo" />
-              </Button>
-              <Communities />
-            </>
-          )}
-
-          {/* TOPICS */}
-          {!userState.user && (
-            <>
-              <Button
-                name={option.TOPICS}
-                dropDown={true}
-                logo={true}
-                onClick={() => {
-                  toggleDropdown("TOPICS");
-                }}
-              >
-                <ChevronUp
-                  className={`dropDownStyle right-0 ${!dropdownStates.TOPICS && "rotate-180"}`}
-                />
-              </Button>
-            </>
-          )}
-
-          {/* RESOURCES */}
-          <Button
-            name={option.RESOURCES}
-            dropDown={true}
-            logo={true}
-            onClick={() => {
-              toggleDropdown("RESOURCES");
-            }}
-          >
-            <ChevronUp
-              className={`dropDownStyle right-0 ${!dropdownStates.RESOURCES && "rotate-180"}`}
-            />
-          </Button>
         </div>
       </div>
     </>

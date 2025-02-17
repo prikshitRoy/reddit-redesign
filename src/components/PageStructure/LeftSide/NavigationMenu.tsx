@@ -20,6 +20,7 @@ import SideBarButtons, {
   Shrink,
   Starlogo,
 } from "./SideBarButton";
+import { DropdownButton, NavButton, NavcommunityBtn } from "./NavButton";
 
 const NavigationMenu: React.FC = () => {
   const userState = useRecoilValue(redditUser);
@@ -73,12 +74,27 @@ const NavigationMenu: React.FC = () => {
     <>
       <div className="flex flex-col items-center justify-center text-black">
         <div className="my-3 flex h-fit w-full flex-col px-3">
-          {/* <Button name="Home" src="/home.svg" alt="" image={true} /> */}
-          {/*  <Button name="Popular" src="/popular.svg" alt="" image={true} /> */}
-          <SideBarButtons name="Home" type="normal" src="/home.svg" />
+          <NavButton name="Home" src="/home.svg" />
+          <NavButton name="Popular" src="/popular.svg" />
+          <NavButton name="Explore" src="/explore.svg" />
+          <NavButton name="All" src="/all.svg" />
+          {userState.user && (
+            <>
+              <DropdownButton name="MODERATION">
+                {mySnippets
+                  .filter((snippet) => snippet.isModerator)
+                  .map((snippet) => (
+                    <NavcommunityBtn name={snippet.communityId} src="" />
+                  ))}
+              </DropdownButton>
+              {/*               <DropdownButton name="CUSTOM FEEDS" />
+              <DropdownButton name="RECENT" />
+              <DropdownButton name="COMMUNITIES" /> */}
+            </>
+          )}
 
           {/*New MODERATION */}
-          {userState.user && (
+          {/*           {userState.user && (
             <>
               <SideBarButtons
                 type="dropdown"
@@ -111,7 +127,11 @@ const NavigationMenu: React.FC = () => {
                   ))}
               </Shrink>
             </>
-          )}
+          )} */}
+
+          {/* New */}
+          {/*           {!userState.user && <DropdownButton name="TOPICS" />}
+          <DropdownButton name="RESOURCES" /> */}
         </div>
       </div>
     </>

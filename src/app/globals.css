@@ -78,6 +78,18 @@ body {
 }
 
 @layer components {
+  .navButton {
+    @apply flex h-8 w-[11.6rem] items-center gap-[0.7rem] rounded-md px-[1.15rem] text-[0.72rem] hover:cursor-pointer hover:bg-slate-100 active:bg-gray-200;
+  }
+
+  .DropdownButton {
+    @apply flex h-8 w-[11.556rem] items-center justify-between rounded-md px-[0.815rem] text-[0.62rem] tracking-[0.099em] text-gray-500 hover:cursor-pointer hover:bg-slate-100;
+  }
+
+  .NavcommunityBtnCSS {
+    @apply flex h-8 w-[11.6rem] items-center rounded-md px-[0.740rem] text-[0.72rem] hover:cursor-pointer hover:bg-slate-100 active:bg-gray-300;
+  }
+
   .navMenuItem {
     @apply flex h-8 w-[11.6rem] items-center gap-[0.4rem] rounded-md px-[0.80rem] text-left hover:cursor-pointer hover:bg-slate-100;
   }
@@ -87,10 +99,10 @@ body {
   }
 
   .starButton {
-    @apply flex h-6 w-6 items-center justify-center rounded-full hover:bg-slate-300;
+    @apply flex h-6 w-6 items-center justify-center rounded-full hover:bg-slate-300 active:bg-gray-400;
   }
 
   .dropDownStyle {
-    @apply h-4 w-4 stroke-[1.2] text-black;
+    @apply h-4 w-4 stroke-[1.2] text-black transition-transform duration-300 ease-in-out;
   }
 }

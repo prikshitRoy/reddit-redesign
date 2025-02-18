@@ -3,8 +3,7 @@
 import { CommunitySnippets } from "@/atoms/communitiesAtom";
 import React, { forwardRef, ReactNode } from "react";
 import { useMergeRefs } from "use-callback-ref";
-import { cn } from "@/lib/utils";
-import { ChevronUp, LucidePlus, Star } from "lucide-react";
+import { ChevronUp, Star } from "lucide-react";
 
 /* export type logo =  */
 
@@ -33,6 +32,7 @@ export type ButtonName =
   | "Press"
   | "Communities"
   | "Best of Reddit"
+  | "Topics"
   | "Reddit Rules"
   | "Privacy Policy"
   | "User Agreement"
@@ -47,8 +47,6 @@ export type ButtonName =
   | "Art"
   | "Business"
   | "see more";
-export type ButtonType = "normal" | "dropdown" | "community";
-export type CommunityName = CommunitySnippets["communityId"];
 
 export interface NavButtonProps {
   name: ButtonName;

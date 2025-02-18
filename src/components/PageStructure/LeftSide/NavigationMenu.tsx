@@ -8,19 +8,9 @@ import {
 import Communities from "@/components/CreateCommunity/DialogBox/CommunityModal";
 import { useDeleteReservedCommunityNames } from "@/firebaseServices/CommunityFirebase/CreatedCommunityFirebaseHooks/DeleteReservedCommunityNames";
 import { UseCommunityData } from "@/firebaseServices/CommunityFirebase/UseCommunityData/UseCommunityData";
-import { cn } from "@/lib/utils";
-import { ChevronUp, LucidePlus, Star } from "lucide-react";
-import Image from "next/image";
-import { ReactNode, useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
-import SideBarButtons, {
-  DropDownButtonTypes,
-  DropDownButtonOption,
-  Line,
-  Shrink,
-  Starlogo,
-} from "./SideBarButton";
-import { DropdownButton, NavButton, NavcommunityBtn } from "./NavButton";
+import { DropdownButton, Line, NavButton, NavcommunityBtn } from "./NavButton";
 
 const NavigationMenu: React.FC = () => {
   const userState = useRecoilValue(redditUser);
@@ -32,29 +22,9 @@ const NavigationMenu: React.FC = () => {
 
   const { deleteReservedNames } = useDeleteReservedCommunityNames();
 
-  const [dropdownStates, setDropdownStates] = useState<
-    Record<DropDownButtonTypes, boolean>
-  >(() => {
-    const entries = Object.values(DropDownButtonOption).reduce(
-      (acc, key) => {
-        acc[key] = true;
-        return acc;
-      },
-      {} as Record<DropDownButtonTypes, boolean>,
-    );
-
-    return entries;
-  });
-
-  const toggleDropdown = (DropDownButtonOption: DropDownButtonTypes) => {
-    setDropdownStates((prev) => ({
-      ...prev,
-      [DropDownButtonOption]: !prev[DropDownButtonOption],
-    }));
-  };
-
   //! Create Community Function
   const HandleCreateCommunityButton = () => {
+    console.log("HandleCreateCommunityButton Clicked");
     setcreateCommunityViewState({
       open: true,
       view: "CommunityNameDiscription",
@@ -72,66 +42,69 @@ const NavigationMenu: React.FC = () => {
 
   return (
     <>
+      {/* //TODO: Complete diff. button logics */}
       <div className="flex flex-col items-center justify-center text-black">
         <div className="my-3 flex h-fit w-full flex-col px-3">
           <NavButton name="Home" src="/home.svg" />
           <NavButton name="Popular" src="/popular.svg" />
           <NavButton name="Explore" src="/explore.svg" />
           <NavButton name="All" src="/all.svg" />
+
           {userState.user && (
             <>
+              {/* MODERATION */}
               <DropdownButton name="MODERATION">
-                {mySnippets
-                  .filter((snippet) => snippet.isModerator)
-                  .map((snippet) => (
-                    <NavcommunityBtn name={snippet.communityId} src="" />
-                  ))}
+                <>
+                  <NavButton name="Mod Queue" src="/mod-queue.svg" />
+                  <NavButton name="Mod Mail" src="/mod-mail.svg" />
+                  <NavButton name="r/Mod" src="/r-mod.svg" />
+                  {mySnippets
+                    .filter((snippet) => snippet.isModerator)
+                    .map((snippet) => (
+                      <NavcommunityBtn name={snippet.communityId} src="" />
+                    ))}
+                </>
               </DropdownButton>
-              {/*               <DropdownButton name="CUSTOM FEEDS" />
-              <DropdownButton name="RECENT" />
-              <DropdownButton name="COMMUNITIES" /> */}
+
+              {/* CUSTOM FEEDS */}
+              <DropdownButton name="CUSTOM FEEDS">
+                <NavButton name="Create a custom feed" src="/plus.svg" />
+              </DropdownButton>
+              <DropdownButton name="RECENT">
+                <></>
+              </DropdownButton>
+              <DropdownButton name="COMMUNITIES">
+                <>
+                  <NavButton
+                    name="Create a community"
+                    src="/plus.svg"
+                    onClick={() => HandleCreateCommunityButton()}
+                  />
+                  <Communities />
+                </>
+              </DropdownButton>
             </>
           )}
 
-          {/*New MODERATION */}
-          {/*           {userState.user && (
+          {/* //TODO:  {!userState.user && <DropdownButton name="TOPICS" />} */}
+          <DropdownButton name="RESOURCES">
             <>
-              <SideBarButtons
-                type="dropdown"
-                name="MODERATION"
-                id={DropDownButtonOption.MODERATION}
-                dropdownState={dropdownStates.MODERATION}
-                onClick={() => {
-                  toggleDropdown("MODERATION");
-                }}
-              />
-              <Shrink
-                id={DropDownButtonOption.MODERATION}
-                dropdownState={dropdownStates.MODERATION}
-              >
-                {mySnippets
-                  .filter((snippet) => snippet.isModerator)
-                  .map((snippet) => (
-                    <SideBarButtons
-                      type="community"
-                      id={snippet.communityId}
-                      name={snippet.communityId}
-                      src=""
-                      dropdownState={dropdownStates.MODERATION}
-                    >
-                      <Starlogo
-                        id={snippet.communityId}
-                        dropdownState={dropdownStates.MODERATION}
-                      />
-                    </SideBarButtons>
-                  ))}
-              </Shrink>
+              <NavButton name="About Reddit" src="/about-reddit.svg" />
+              <NavButton name="Advertise" src="/advertise.svg" />
+              <NavButton name="Help" src="/help.svg" />
+              <NavButton name="Blog" src="/blog.svg" />
+              <NavButton name="Careers" src="careers.svg" />
+              <NavButton name="Press" src="/press.svg" />
+              <Line />
+              <NavButton name="Communities" src="/communities.svg" />
+              <NavButton name="Best of Reddit" src="/best-of-reddit.svg" />
+              <NavButton name="Topics" src="/topics.svg" />
+              <Line />
+              <NavButton name="Reddit Rules" src="/reddit-rules.svg" />
+              <NavButton name="Privacy Policy" src="/privacy-policy.svg" />
+              <NavButton name="User Agreement" src="user-agreement.svg" />
             </>
-          )} */}
-
-          {/* New */}
-          {/*           {!userState.user && <DropdownButton name="TOPICS" />}
-          <DropdownButton name="RESOURCES" /> */}
+          </DropdownButton>
         </div>
       </div>
     </>

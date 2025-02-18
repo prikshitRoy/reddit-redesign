@@ -90,19 +90,17 @@ body {
     @apply flex h-8 w-[11.6rem] items-center rounded-md px-[0.740rem] text-[0.72rem] hover:cursor-pointer hover:bg-slate-100 active:bg-gray-300;
   }
 
-  .navMenuItem {
-    @apply flex h-8 w-[11.6rem] items-center gap-[0.4rem] rounded-md px-[0.80rem] text-left hover:cursor-pointer hover:bg-slate-100;
-  }
-
-  .navLogo {
-    @apply flex h-6 w-6 items-center justify-center rounded-full bg-transparent stroke-1;
-  }
-
   .starButton {
     @apply flex h-6 w-6 items-center justify-center rounded-full hover:bg-slate-300 active:bg-gray-400;
   }
 
   .dropDownStyle {
     @apply h-4 w-4 stroke-[1.2] text-black transition-transform duration-300 ease-in-out;
+  }
+
+  .test {
+    .check {
+      @apply bg-gray-50 text-red-100;
+    }
   }
 }

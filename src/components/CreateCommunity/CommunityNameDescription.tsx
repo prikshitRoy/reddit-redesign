@@ -57,7 +57,7 @@ const CommunityNameDescription: React.FC = () => {
               style={{ lineHeight: "1", marginBottom: "0" }}
             >
               r/
-              {!CommunityData.id ? "communityname" : CommunityData.id}
+              {!CommunityData.name ? "communityname" : CommunityData.name}
             </div>
             <div className="flex flex-col text-[0.6rem] font-thin text-gray-500">
               <div>1 member ·1 online</div>

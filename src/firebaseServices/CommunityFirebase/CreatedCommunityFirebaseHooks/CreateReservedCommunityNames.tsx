@@ -16,12 +16,12 @@ export function useCreateReserveCommunityName() {
   const userState = useRecoilValue(redditUser);
 
   //Deletes users all reserved CommunityName if user has more than 5 reserved community names
-  //Leaves reserveCommunityName === communityData.id
+  //Leaves reserveCommunityName === communityData.name
   const { resetUserReservedCommunityName } = useDeleteReservedCommunityNames();
 
   const CheckCommunityName = async () => {
     //TODO: convert it to Transaction
-    const newCommunityName = communityData.id.toLowerCase();
+    const newCommunityName = communityData.name.toLowerCase();
     const communityDocRef = doc(db, "communities", newCommunityName);
     const reserveCommunityNameDocRef = doc(
       db,
@@ -61,7 +61,7 @@ export function useCreateReserveCommunityName() {
       // If name is not taken or reserved, create new reservation
       try {
         await setDoc(reserveCommunityNameDocRef, {
-          name: communityData.id,
+          name: communityData.name,
           creatorId: userState.userUid,
           createdAt: serverTimestamp(),
         });

@@ -48,7 +48,7 @@ const Communities: React.FC = () => {
   function validNameDescription() {
     if (
       valid.nameExist === false &&
-      CommunityData.id.length >= 3 &&
+      CommunityData.name.length >= 3 &&
       CommunityData.description != ""
     )
       return false;
@@ -139,7 +139,7 @@ const Communities: React.FC = () => {
   const handleCreateCommunity = async () => {
     try {
       const result = await CreateCommunity({
-        name: CommunityData.id,
+        name: CommunityData.name,
         description: CommunityData.description,
         iconURL: CommunityData.iconURL,
         bannerURL: CommunityData.bannerURL,
@@ -154,7 +154,7 @@ const Communities: React.FC = () => {
         //TODO: Handle success
         //toast.success('Community created successfully!');
         //TODO: Optionally redirect to the new community
-        //router.push(`/r/${CommunityData.id}`);
+        //router.push(`/r/${CommunityData.name}`);
 
         handleClose();
       } else {

@@ -18,7 +18,7 @@ import { redditUser } from "@/atoms/authModalAtom";
 export function useDeleteReservedCommunityNames() {
   const userState = useRecoilValue(redditUser);
   const communityData = useRecoilValue(createCommunity);
-  const newCommunityName = communityData.id.toLowerCase();
+  const newCommunityName = communityData.name.toLowerCase();
 
   //! Deletes documents from the reserveCommunityName collection that were created more than 30 minutes ago.
   //! This function is triggered each time the user opens the Create Community button.
@@ -56,7 +56,7 @@ export function useDeleteReservedCommunityNames() {
   };
 
   //! Deletes all reserveCommunityName if user has more than 5 reserved community names
-  //! Leaves reserveCommunityName === communityData.id
+  //! Leaves reserveCommunityName === communityData.name
   //! Runs everythime new reserveCommunityName gets created
   const resetUserReservedCommunityName = async () => {
     try {

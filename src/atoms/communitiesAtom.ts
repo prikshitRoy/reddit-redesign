@@ -7,7 +7,7 @@ export type Mature = boolean;
 
 // Community Interface
 export interface Community {
-  id: string;
+  name: string;
   description: string;
   communityCategories: string[];
   communityTopics: string[];
@@ -23,7 +23,7 @@ export interface Community {
 
 // Default Community Value
 export const defaultCommunity: Community = {
-  id: "",
+  name: "",
   description: "",
   communityCategories: [],
   communityTopics: [],

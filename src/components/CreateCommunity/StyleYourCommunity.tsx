@@ -76,7 +76,7 @@ const StyleYourCommunity: React.FC = () => {
                     style={{ lineHeight: "1", marginBottom: "0" }}
                   >
                     r/
-                    {Community.id != "" ? Community.id : "communityname"}
+                    {Community.name != "" ? Community.name : "communityname"}
                   </div>
                   <div className="text-[0.6rem] font-thin text-gray-500">
                     1 member ·1 online

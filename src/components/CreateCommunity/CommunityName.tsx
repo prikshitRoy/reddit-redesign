@@ -70,7 +70,7 @@ const CommunityName: React.FC<CommunityNameProps> = ({
       setErrorMesageCommunityName(message);
     } else {
       setErrorMesageCommunityName(
-        `${Community.id} already taken. Try another.`,
+        `${Community.name} already taken. Try another.`,
       );
     }
   };
@@ -134,8 +134,8 @@ const CommunityName: React.FC<CommunityNameProps> = ({
     RemoveError();
 
     // When user click back it sets community Name
-    if (Community.id) {
-      setCommunityName(Community.id);
+    if (Community.name) {
+      setCommunityName(Community.name);
     }
   }, []);
 

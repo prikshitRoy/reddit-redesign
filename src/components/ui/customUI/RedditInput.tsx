@@ -116,7 +116,7 @@ const RedditInput = React.forwardRef<
         >
           <span
             className={`pointer-events-none absolute left-3 border-transparent transition-all duration-300 ${
-              isFocused || inputValue || Community.id
+              isFocused || inputValue || Community.name
                 ? "top-2 text-[12px]"
                 : "top-1/2 -translate-y-1/2 text-xs"
             }`}

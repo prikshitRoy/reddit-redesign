@@ -19,6 +19,7 @@ interface CommunityProps {
 }
 
 // TODO: Handale Community Banner and Icon.
+// TODO: Community can have multiple Moderator
 
 //! Creates New Community
 export function Community() {

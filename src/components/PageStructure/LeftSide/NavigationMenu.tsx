@@ -7,7 +7,7 @@ import {
 } from "@/atoms/communitiesAtom";
 import Communities from "@/components/CreateCommunity/DialogBox/CommunityModal";
 import { useDeleteReservedCommunityNames } from "@/firebaseServices/CommunityFirebase/CreatedCommunityFirebaseHooks/DeleteReservedCommunityNames";
-import { UseCommunityData } from "@/firebaseServices/CommunityFirebase/UseCommunityData/UseCommunityData";
+import { UseUserData } from "@/firebaseServices/CommunityFirebase/UseUserData/UseUserData";
 import { useEffect } from "react";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { DropdownButton, Line, NavButton, NavcommunityBtn } from "./NavButton";
@@ -18,7 +18,7 @@ const NavigationMenu: React.FC = () => {
     createCommunityViewState,
   );
   const mySnippets = useRecoilValue(CommunityState).mySnippets;
-  const { getMySnippets } = UseCommunityData();
+  const { getMySnippets } = UseUserData();
 
   const { deleteReservedNames } = useDeleteReservedCommunityNames();
 
@@ -53,6 +53,7 @@ const NavigationMenu: React.FC = () => {
           {userState.user && (
             <>
               {/* MODERATION */}
+              {/* //TODO: do not show MODERATION if user did not create any community */}
               <DropdownButton name="MODERATION">
                 <>
                   <NavButton name="Mod Queue" src="/mod-queue.svg" />
@@ -70,9 +71,13 @@ const NavigationMenu: React.FC = () => {
               <DropdownButton name="CUSTOM FEEDS">
                 <NavButton name="Create a custom feed" src="/plus.svg" />
               </DropdownButton>
+
+              {/* RECENT */}
+              {/* //TODO: do not show RECENT if user have not visited any community recently */}
               <DropdownButton name="RECENT">
                 <></>
               </DropdownButton>
+
               <DropdownButton name="COMMUNITIES">
                 <>
                   <NavButton
@@ -81,6 +86,11 @@ const NavigationMenu: React.FC = () => {
                     onClick={() => HandleCreateCommunityButton()}
                   />
                   <Communities />
+                  {mySnippets
+                    .filter((snippet) => snippet)
+                    .map((snippet) => (
+                      <NavcommunityBtn name={snippet.communityId} src="" />
+                    ))}
                 </>
               </DropdownButton>
             </>
@@ -102,7 +112,7 @@ const NavigationMenu: React.FC = () => {
               <Line />
               <NavButton name="Reddit Rules" src="/reddit-rules.svg" />
               <NavButton name="Privacy Policy" src="/privacy-policy.svg" />
-              <NavButton name="User Agreement" src="user-agreement.svg" />
+              <NavButton name="User Agreement" src="/user-agreement.svg" />
             </>
           </DropdownButton>
         </div>

@@ -7,7 +7,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import { CommunitySnippets, CommunityState } from "@/atoms/communitiesAtom";
 import { redditUser } from "@/atoms/authModalAtom";
 
-export function UseCommunityData() {
+export function UseUserData() {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [communityStateValue, setCommunityStateValue] =

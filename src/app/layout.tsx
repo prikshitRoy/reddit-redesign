@@ -1,8 +1,9 @@
+import "./globals.css";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import "./globals.css";
-import RecoilContextProvider from "@/atoms/RecoilContextProvider";
 import Navbar from "@/components/Navbar/Navbar";
+import RecoilContextProvider from "@/atoms/RecoilContextProvider";
+import TanstackQueryClientProvider from "@/tanstack/TanstackQueryClientProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -30,10 +31,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <RecoilContextProvider>
-          <Navbar />
-          {children}
-        </RecoilContextProvider>
+        <TanstackQueryClientProvider>
+          <RecoilContextProvider>
+            <Navbar />
+            {children}
+          </RecoilContextProvider>
+        </TanstackQueryClientProvider>
       </body>
     </html>
   );

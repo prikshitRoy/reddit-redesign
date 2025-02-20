@@ -13,10 +13,12 @@ import { ArrowLeft } from "lucide-react";
 import AuthInputs from "./AuthInputs";
 import { useEffect } from "react";
 import AuthSubmitButton from "./AuthSubmitButton";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "@/firebase/clientApp";
 
 const AuthModal: React.FC = () => {
+  const [user, loading, error] = useAuthState(auth);
   const [modalState, setModalState] = useRecoilState(authModalState);
-  const userState = useRecoilValue(redditUser);
 
   const back = () => {
     setModalState((prev) => ({
@@ -33,8 +35,10 @@ const AuthModal: React.FC = () => {
   };
 
   useEffect(() => {
-    if (userState.user) handleClose();
-  }, [userState.user]);
+    if (user) {
+      handleClose();
+    }
+  }, [user]);
 
   const viewsWithBackButton = [
     "resetPassword",

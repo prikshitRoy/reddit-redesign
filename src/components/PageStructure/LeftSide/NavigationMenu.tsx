@@ -59,10 +59,15 @@ const NavigationMenu: React.FC = () => {
                   <NavButton name="Mod Queue" src="/mod-queue.svg" />
                   <NavButton name="Mod Mail" src="/mod-mail.svg" />
                   <NavButton name="r/Mod" src="/r-mod.svg" />
+
                   {mySnippets
                     .filter((snippet) => snippet.isModerator)
                     .map((snippet) => (
-                      <NavcommunityBtn name={snippet.communityId} src="" />
+                      <NavcommunityBtn
+                        key={`mod-${snippet.communityId}`}
+                        name={snippet.communityId}
+                        src=""
+                      />
                     ))}
                 </>
               </DropdownButton>
@@ -89,7 +94,11 @@ const NavigationMenu: React.FC = () => {
                   {mySnippets
                     .filter((snippet) => snippet)
                     .map((snippet) => (
-                      <NavcommunityBtn name={snippet.communityId} src="" />
+                      <NavcommunityBtn
+                        key={`community-${snippet.communityId}`}
+                        name={snippet.communityId}
+                        src=""
+                      />
                     ))}
                 </>
               </DropdownButton>

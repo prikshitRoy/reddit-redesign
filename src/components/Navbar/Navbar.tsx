@@ -15,11 +15,6 @@ const Navbar: React.FC = () => {
   const [userState, setUserState] = useRecoilState(redditUser);
   const resetUserState = useResetRecoilState(redditUser);
 
-  const router = useRouter();
-  const Home = () => {
-    router.push("/"); // Navigates to the home page
-  };
-
   useEffect(() => {
     if (user) {
       console.log("User:", user);
@@ -32,10 +27,7 @@ const Navbar: React.FC = () => {
 
   return (
     <div className="sticky top-0 flex h-[54px] justify-between border border-b-2 pl-[12px] pr-[12px]">
-      <div
-        className="my-auto flex h-7 w-[40px] cursor-pointer align-middle md:w-auto"
-        onClick={Home}
-      >
+      <div className="my-auto flex h-7 w-[40px] cursor-pointer align-middle md:w-auto">
         <Image
           src="redditFace.svg"
           alt="reddit svg"
